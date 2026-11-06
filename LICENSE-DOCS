@@ -1,0 +1,21 @@
+CC BY 4.0
+
+The documents in this repository — REPORT.md, PLAN.md, README.md, and the
+contents of evidence/ — are licensed under the Creative Commons Attribution 4.0
+International License.
+
+You are free to share and adapt the material for any purpose, provided you give
+appropriate credit, link to the license, and indicate if changes were made.
+
+Full text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Third-party material is excluded from this license:
+
+- LoCoMo (https://github.com/snap-research/locomo) — cited and used for
+  verification only; not redistributed. See its own LICENSE.txt.
+- Quoted product documentation and marketing copy from Living Brain /
+  ChatAndBuild — quoted for criticism and analysis (fair use / citation).
+- OpenAPI specification (raw/openapi.json) and MCP tool metadata
+  (raw/mcp-tools.json) — published by the vendor as public developer
+  documentation; reproduced here for verification. Rights remain with the
+  vendor.

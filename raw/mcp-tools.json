@@ -1,0 +1,3300 @@
+{
+ "result": {
+  "tools": [
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      }
+     ],
+     "openapi/operationId": "brains_bulkStats"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Aggregate counts for many brains in one round trip. Pass a comma-separated `ids` list; brains the caller cannot access are omitted rather than erroring. Returns dictionary. Requires authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "ids": {
+         "description": "Comma-separated brain ids, e.g. `ids=a,b,c`. Unowned ids are omitted.",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "type": "object"
+    },
+    "name": "brains_bulk_stats",
+    "title": "Bulk brain stats"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 403",
+       "status": "403"
+      }
+     ],
+     "openapi/operationId": "brains_create"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Create a new brain for the calling subject. A brain is an isolated knowledge vault: every capture, page, and connection belongs to exactly one brain. The `x-subject-id` header determines who owns it. Returns briefSettings, createdAt, description. Requires body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "description": {
+         "description": "Optional description",
+         "type": "string"
+        },
+        "name": {
+         "description": "User-facing name of the brain",
+         "type": "string"
+        }
+       },
+       "required": [
+        "name"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "object"
+    },
+    "name": "brains_create",
+    "title": "Create a brain"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "brains_get"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Retrieve a single brain by ID, including its name, description, and brief settings. Returns briefSettings, createdAt, description. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "brains_get",
+    "title": "Get a brain"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      }
+     ],
+     "openapi/operationId": "brains_list"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List every brain owned by the calling subject, most recently updated first. Returns array. Requires authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {},
+     "type": "object"
+    },
+    "name": "brains_list",
+    "title": "List brains"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 403",
+       "status": "403"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "brains_remove"
+    },
+    "annotations": {
+     "destructiveHint": true,
+     "idempotentHint": true,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Permanently delete a brain along with all of its pages, sources, connections, and change history. This cannot be undone. Returns id. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "brains_remove",
+    "title": "Delete a brain"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "brains_runBrief"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Generate this brain's daily brief immediately instead of waiting for its scheduled run. Returns the brief content once generation completes. Returns pageId, slug. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "brains_run_brief",
+    "title": "Run the daily brief"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "brains_stats"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Aggregate counts for a single brain \u2014 pages, sources, connections, and unacknowledged changes. Useful for dashboard headline numbers. Returns agentCount, archivedPageCount, bucketCounts. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "brains_stats",
+    "title": "Brain stats"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "brains_update"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Update a brain's mutable fields, such as its name or description. Omitted fields are left unchanged. Returns briefSettings, createdAt, description. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "description": {
+         "description": "New description",
+         "type": "string"
+        },
+        "name": {
+         "description": "New name",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "brains_update",
+    "title": "Update a brain"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "brains_updateBriefSettings"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Update the daily-brief schedule and delivery settings for a brain, including whether briefs are enabled and what time they are generated. Returns briefSettings, createdAt, description. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "briefSettings": {
+         "additionalProperties": false,
+         "properties": {
+          "enabled": {
+           "description": "Generate a daily brief for this brain",
+           "type": "boolean"
+          },
+          "hourLocal": {
+           "description": "Local-time hour the brief should fire",
+           "maximum": 23,
+           "minimum": 0,
+           "type": "integer"
+          },
+          "timezone": {
+           "description": "IANA timezone",
+           "type": "string"
+          }
+         },
+         "required": [
+          "enabled",
+          "hourLocal",
+          "timezone"
+         ],
+         "type": "object"
+        }
+       },
+       "required": [
+        "briefSettings"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "brains_update_brief_settings",
+    "title": "Update brief settings"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      },
+      {
+       "name": "HTTP 429",
+       "status": "429"
+      }
+     ],
+     "openapi/operationId": "captures_capture"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Push a single item into a brain for ingestion. Accepts notes, URLs, raw text, chat transcripts, and PDF/DOCX/PPTX documents. Capture is asynchronous: this returns an ingest source whose `status` you can poll or receive via webhook. Returns affectedPageIds, attempts, brainId. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "bucket": {
+         "description": "Bucket hint for the resulting page(s)",
+         "enum": [
+          "inbox",
+          "notes",
+          "ideas",
+          "projects"
+         ],
+         "type": "string"
+        },
+        "content": {
+         "description": "Raw textual content of the capture",
+         "type": "string"
+        },
+        "fetchUrl": {
+         "description": "URL the service fetches and extracts instead of inlined content. Extraction is driven by `kind`: file -> parse PDF, Word, PPTX, HTML, or UTF-8 text; url -> scrape web page; transcript -> transcribe audio. Legacy .ppt and other unsupported binary formats are rejected. No cloud credentials needed.",
+         "type": "string"
+        },
+        "fileName": {
+         "description": "Original filename hint for `fetchUrl` extraction, including its extension",
+         "type": "string"
+        },
+        "kind": {
+         "description": "Kind of raw input",
+         "enum": [
+          "note",
+          "file",
+          "url",
+          "transcript",
+          "chat_turn",
+          "integration"
+         ],
+         "type": "string"
+        },
+        "label": {
+         "description": "Short title / filename / URL for display",
+         "type": "string"
+        },
+        "mimeType": {
+         "description": "MIME type hint for `fetchUrl` extraction (for example application/vnd.openxmlformats-officedocument.presentationml.presentation)",
+         "type": "string"
+        },
+        "originRef": {
+         "description": "Origin URL / external id, also used as the idempotency key for dedup",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "source": {
+         "additionalProperties": false,
+         "properties": {
+          "channel": {
+           "description": "Provenance channel",
+           "type": "string"
+          },
+          "label": {
+           "description": "Human-readable provenance label",
+           "type": [
+            "string",
+            "null"
+           ]
+          },
+          "ref": {
+           "description": "Opaque host reference (e.g. agent id)",
+           "type": [
+            "string",
+            "null"
+           ]
+          }
+         },
+         "required": [
+          "channel"
+         ],
+         "type": "object"
+        }
+       },
+       "required": [
+        "kind"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "captures_capture",
+    "title": "Push a capture"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      },
+      {
+       "name": "HTTP 429",
+       "status": "429"
+      }
+     ],
+     "openapi/operationId": "captures_captureBatch"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Push many captures in a single request. Each item is processed independently, so a malformed entry fails on its own without rejecting the whole batch. Returns ingested, sources. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "items": {
+         "description": "Captures to ingest",
+         "items": {
+          "additionalProperties": false,
+          "properties": {
+           "bucket": {
+            "description": "Bucket hint for the resulting page(s)",
+            "enum": [
+             "inbox",
+             "notes",
+             "ideas",
+             "projects"
+            ],
+            "type": "string"
+           },
+           "content": {
+            "description": "Raw textual content of the capture",
+            "type": "string"
+           },
+           "fetchUrl": {
+            "description": "URL the service fetches and extracts instead of inlined content. Extraction is driven by `kind`: file -> parse PDF, Word, PPTX, HTML, or UTF-8 text; url -> scrape web page; transcript -> transcribe audio. Legacy .ppt and other unsupported binary formats are rejected. No cloud credentials needed.",
+            "type": "string"
+           },
+           "fileName": {
+            "description": "Original filename hint for `fetchUrl` extraction, including its extension",
+            "type": "string"
+           },
+           "kind": {
+            "description": "Kind of raw input",
+            "enum": [
+             "note",
+             "file",
+             "url",
+             "transcript",
+             "chat_turn",
+             "integration"
+            ],
+            "type": "string"
+           },
+           "label": {
+            "description": "Short title / filename / URL for display",
+            "type": "string"
+           },
+           "mimeType": {
+            "description": "MIME type hint for `fetchUrl` extraction (for example application/vnd.openxmlformats-officedocument.presentationml.presentation)",
+            "type": "string"
+           },
+           "originRef": {
+            "description": "Origin URL / external id, also used as the idempotency key for dedup",
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "source": {
+            "additionalProperties": false,
+            "properties": {
+             "channel": {
+              "description": "Provenance channel",
+              "type": "string"
+             },
+             "label": {
+              "description": "Human-readable provenance label",
+              "type": [
+               "string",
+               "null"
+              ]
+             },
+             "ref": {
+              "description": "Opaque host reference (e.g. agent id)",
+              "type": [
+               "string",
+               "null"
+              ]
+             }
+            },
+            "required": [
+             "channel"
+            ],
+            "type": "object"
+           }
+          },
+          "required": [
+           "kind"
+          ],
+          "type": "object"
+         },
+         "maxItems": 500,
+         "type": "array"
+        }
+       },
+       "required": [
+        "items"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "captures_capture_batch",
+    "title": "Push a capture batch"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      },
+      {
+       "name": "HTTP 429",
+       "status": "429"
+      }
+     ],
+     "openapi/operationId": "captures_captureChatTurn"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Submit a single chat turn for worthiness classification. The service decides whether the turn contains durable knowledge and only captures it if so, which keeps conversational filler out of the brain. Returns reason, sourceId, worthy. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "agentName": {
+         "description": "Agent display name for classifier context",
+         "type": "string"
+        },
+        "originRef": {
+         "description": "Idempotency key for the turn (e.g. chat: : )",
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "sender": {
+         "description": "Who produced the turn",
+         "enum": [
+          "user",
+          "agent"
+         ],
+         "type": "string"
+        },
+        "source": {
+         "additionalProperties": false,
+         "properties": {
+          "channel": {
+           "description": "Provenance channel",
+           "type": "string"
+          },
+          "label": {
+           "description": "Human-readable provenance label",
+           "type": [
+            "string",
+            "null"
+           ]
+          },
+          "ref": {
+           "description": "Opaque host reference (e.g. agent id)",
+           "type": [
+            "string",
+            "null"
+           ]
+          }
+         },
+         "required": [
+          "channel"
+         ],
+         "type": "object"
+        },
+        "text": {
+         "description": "Raw chat turn text",
+         "type": "string"
+        }
+       },
+       "required": [
+        "text",
+        "sender"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "captures_capture_chat_turn",
+    "title": "Push a chat turn"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      },
+      {
+       "name": "HTTP 429",
+       "status": "429"
+      }
+     ],
+     "openapi/operationId": "captures_listSources"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List ingest sources for a brain, optionally filtered by processing status. Use this to surface an ingestion queue or to find sources that failed to compile. Returns items, limit, offset. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "ids": {
+         "description": "Comma-separated source ids for a targeted lookup (e.g. resolving a page\u2019s source refs regardless of age)",
+         "type": "string"
+        },
+        "limit": {
+         "type": "integer"
+        },
+        "offset": {
+         "type": "integer"
+        },
+        "status": {
+         "enum": [
+          "pending",
+          "compiling",
+          "completed",
+          "failed"
+         ],
+         "type": "string"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "captures_list_sources",
+    "title": "List ingest sources"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      },
+      {
+       "name": "HTTP 429",
+       "status": "429"
+      }
+     ],
+     "openapi/operationId": "captures_removeSource"
+    },
+    "annotations": {
+     "destructiveHint": true,
+     "idempotentHint": true,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Delete an ingest source. Pages already derived from the source are retained unless you delete them separately. Returns id. Requires brainId, sourceId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "sourceId": {
+       "description": "Ingest source id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "sourceId"
+     ],
+     "type": "object"
+    },
+    "name": "captures_remove_source",
+    "title": "Delete an ingest source"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      },
+      {
+       "name": "HTTP 429",
+       "status": "429"
+      }
+     ],
+     "openapi/operationId": "captures_retrySource"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Retry compiling an ingest source that previously failed. Only sources in a failed state can be retried. Returns enqueued, id. Requires brainId, sourceId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "sourceId": {
+       "description": "Ingest source id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "sourceId"
+     ],
+     "type": "object"
+    },
+    "name": "captures_retry_source",
+    "title": "Retry an ingest source"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_bind"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Connect a Slack channel to a brain so it receives brain notifications. Configure which notifications it receives with `updateBinding`. Returns brainId, channelId, channelName. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "channelId": {
+         "description": "Slack channel id",
+         "type": "string"
+        },
+        "installationId": {
+         "description": "Slack installation id",
+         "type": "string"
+        }
+       },
+       "required": [
+        "installationId",
+        "channelId"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_bind",
+    "title": "Bind a Slack channel"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_channels"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List the channels visible to the Living Brain bot in a Slack installation. `isMember` tells you whether the bot has already been added to the channel. Returns array. Requires brainId, installationId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "installationId": {
+         "description": "Slack installation id returned by the status endpoint",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_channels",
+    "title": "List Slack channels"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_confirmOAuth"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Complete a Slack installation by exchanging the `code` and `state` Slack returned to your redirect URL. Returns the new installation ID. Returns brainId, installationId, teamId. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "code": {
+         "description": "Slack authorization code",
+         "type": "string"
+        },
+        "state": {
+         "description": "Signed OAuth state",
+         "type": "string"
+        }
+       },
+       "required": [
+        "code",
+        "state"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_confirm_oauth",
+    "title": "Confirm Slack OAuth"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_disconnectInstallation"
+    },
+    "annotations": {
+     "destructiveHint": true,
+     "idempotentHint": true,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Disconnect a Slack workspace from a brain and remove all of its channel bindings. Returns disconnected. Requires brainId, installationId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "installationId": {
+       "description": "Slack installation id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "installationId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_disconnect_installation",
+    "title": "Disconnect Slack"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_startOAuth"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Create a signed Slack OAuth installation URL for a brain. Redirect the user to `authorizationUrl`; Slack sends them back to your redirect URL with a `code` and `state` to pass to `confirmOauth`. The signed state expires at `expiresAt`. Returns authorizationUrl, expiresAt. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_start_oauth",
+    "title": "Start Slack OAuth"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_status"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return every Slack workspace installed for a brain along with its channel bindings. Use the installation IDs returned here to list channels or create bindings. Returns bindings, installations. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_status",
+    "title": "Slack status"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_unbind"
+    },
+    "annotations": {
+     "destructiveHint": true,
+     "idempotentHint": true,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Disconnect a single Slack channel from a brain. The Slack installation and any other bindings are unaffected. Returns disconnected. Requires brainId, bindingId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "bindingId": {
+       "description": "Slack channel binding id",
+       "type": "string"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "bindingId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_unbind",
+    "title": "Unbind a Slack channel"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "slack_updateBinding"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Update which notifications a bound Slack channel receives \u2014 daily briefs, new connections, and page changes. Omitted fields are left unchanged. Returns brainId, channelId, channelName. Requires brainId, bindingId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "bindingId": {
+       "description": "Slack channel binding id",
+       "type": "string"
+      },
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "notifyBriefs": {
+         "description": "Receive daily summary of brain updates",
+         "type": "boolean"
+        },
+        "notifyChanges": {
+         "description": "Get notified when pages are updated with new knowledge",
+         "type": "boolean"
+        },
+        "notifyConnections": {
+         "description": "Get notified when strong new connections are discovered",
+         "type": "boolean"
+        }
+       },
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "bindingId"
+     ],
+     "type": "object"
+    },
+    "name": "slack_update_binding",
+    "title": "Update a Slack binding"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "telegram_connect"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Connect a Telegram bot to a brain so messages sent to the bot are captured automatically. Returns botFirstName, botUsername, brainId. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "botToken": {
+         "description": "BotFather bot token to connect to this brain",
+         "type": "string"
+        }
+       },
+       "required": [
+        "botToken"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "telegram_connect",
+    "title": "Connect Telegram"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "telegram_disconnect"
+    },
+    "annotations": {
+     "destructiveHint": true,
+     "idempotentHint": true,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Disconnect the Telegram bot from a brain. Already-captured messages are retained. Returns disconnected. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "telegram_disconnect",
+    "title": "Disconnect Telegram"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "telegram_status"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return the current Telegram bot connection status for a brain, including the connected bot's username when one is linked. Returns botFirstName, botUsername, brainId. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "telegram_status",
+    "title": "Telegram status"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 403",
+       "status": "403"
+      }
+     ],
+     "openapi/operationId": "webhooks_create"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Register a webhook endpoint and receive its signing secret. The secret is returned only on creation \u2014 store it immediately, as it cannot be retrieved again. Returns active, createdAt, events. Requires body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "events": {
+         "description": "Event types to subscribe to; empty = all",
+         "items": {
+          "enum": [
+           "brain.page.updated",
+           "brain.change.new",
+           "brain.connection.new",
+           "brain.brief.ready",
+           "brain.import.progress"
+          ],
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "secret": {
+         "description": "Signing secret to use for this subscription. When omitted a random secret is generated and returned once. Hosts that verify deliveries against a pre-configured secret (e.g. an env var) should pass it here so signatures match. Write-only: never returned on reads.",
+         "minLength": 16,
+         "type": "string"
+        },
+        "url": {
+         "description": "HTTPS endpoint to deliver events to",
+         "type": "string"
+        }
+       },
+       "required": [
+        "url"
+       ],
+       "type": "object"
+      }
+     },
+     "type": "object"
+    },
+    "name": "webhooks_create",
+    "title": "Register a webhook"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 403",
+       "status": "403"
+      }
+     ],
+     "openapi/operationId": "webhooks_list"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List all webhook subscriptions for the calling subject. Signing secrets are not included. Returns array. Requires authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {},
+     "type": "object"
+    },
+    "name": "webhooks_list",
+    "title": "List webhooks"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 403",
+       "status": "403"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "webhooks_remove"
+    },
+    "annotations": {
+     "destructiveHint": true,
+     "idempotentHint": true,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Delete a webhook subscription. Deliveries stop immediately. Returns id. Requires id and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "id": {
+       "description": "Webhook subscription id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id"
+     ],
+     "type": "object"
+    },
+    "name": "webhooks_remove",
+    "title": "Delete a webhook"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 403",
+       "status": "403"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "webhooks_update"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Update a webhook subscription's URL or subscribed event types. The signing secret is unchanged. Returns active, createdAt, events. Requires id, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "active": {
+         "description": "Set false to pause deliveries without deleting the subscription.",
+         "type": "boolean"
+        },
+        "events": {
+         "description": "New event list. Replaces the existing subscription set. Omit to leave unchanged.",
+         "items": {
+          "enum": [
+           "brain.page.updated",
+           "brain.change.new",
+           "brain.connection.new",
+           "brain.brief.ready",
+           "brain.import.progress"
+          ],
+          "type": "string"
+         },
+         "type": "array"
+        },
+        "url": {
+         "description": "New delivery URL. Omit to leave unchanged.",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      },
+      "id": {
+       "description": "Webhook subscription id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "id"
+     ],
+     "type": "object"
+    },
+    "name": "webhooks_update",
+    "title": "Update a webhook"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_ackAll"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Acknowledge every outstanding change event in one call, and return how many were cleared. Returns acked. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_ack_all",
+    "title": "Acknowledge all"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_ackChange"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Acknowledge a single change event, removing it from unacknowledged views. Returns ackedAt, action, brainId. Requires brainId, changeId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "changeId": {
+       "description": "Change event id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "changeId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_ack_change",
+    "title": "Acknowledge a change"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_ackConnection"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Dismiss a connection so it stops appearing in unacknowledged views. The connection itself is preserved. Returns ackedAt, brainId, createdAt. Requires brainId, connectionId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "connectionId": {
+       "description": "Connection id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "connectionId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_ack_connection",
+    "title": "Dismiss a connection"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_archive"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Archive a page. Archived pages are hidden from lists and search until restored, but their content, versions, and connections are kept. Use `restore` to bring the page back. Returns archived, backlinks, body. Requires brainId, slug and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_archive",
+    "title": "Archive a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_buckets"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return per-bucket page counts for the brain \u2014 the fastest way to render bucket navigation with badges. Returns dictionary. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_buckets",
+    "title": "Per-bucket page counts"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_changes"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List change-feed events with offset pagination. This is the primary way to sync an external system: poll with `since`, or filter to `unackedOnly` to build an inbox. Returns items, limit, offset. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "limit": {
+         "type": "integer"
+        },
+        "offset": {
+         "type": "integer"
+        },
+        "pageId": {
+         "type": "string"
+        },
+        "since": {
+         "description": "ISO timestamp",
+         "type": "string"
+        },
+        "unackedOnly": {
+         "type": "boolean"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_changes",
+    "title": "List change-feed events"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_deletePermanently"
+    },
+    "annotations": {
+     "destructiveHint": true,
+     "idempotentHint": true,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Permanently delete a page and every record that depends on it, including its versions and connections. This cannot be undone. Returns deleted, pageId, slug. Requires brainId, slug, permanent and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "permanent": {
+         "description": "Explicit irreversible-deletion confirmation",
+         "enum": [
+          "true"
+         ],
+         "type": "string"
+        }
+       },
+       "type": "object"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_delete_permanently",
+    "title": "Delete a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_editContent"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Manually overwrite a page's content. This creates a new version, so the previous content stays retrievable through the version history. Returns archived, backlinks, body. Requires brainId, slug, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "body": {
+         "description": "New page content. Replaces the existing body and creates a new version.",
+         "type": "string"
+        },
+        "summary": {
+         "description": "Short generated summary of the content.",
+         "type": "string"
+        },
+        "title": {
+         "description": "Human-readable title.",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_edit_content",
+    "title": "Edit page content"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_exportMarkdown"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Export the entire brain as a single markdown bundle, suitable for backup or for handing to another tool. Returns brainId, markdown. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "includeDeprecated": {
+         "type": "boolean"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_export_markdown",
+    "title": "Export as markdown"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_getPage"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Read a single page by slug. This bumps the page's `lastReferencedAt`, which feeds the brain health score \u2014 use it when a human or agent actually consumes the content. Returns archived, backlinks, body. Requires brainId, slug and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "includeDeprecated": {
+         "type": "boolean"
+        }
+       },
+       "type": "object"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_get_page",
+    "title": "Read a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_getProfile"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return the brain profile \u2014 the standing directives and context that shape how the brain interprets and organizes new captures. Returns brainId, createdAt, currentProjects. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_get_profile",
+    "title": "Get the brain profile"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_getScore"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return the brain's health score with its contributing factors and metrics. The score reflects coverage, freshness, and connectedness. Returns brainId, computedAt, freshness. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_get_score",
+    "title": "Brain health score"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_graph"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return a renderable subgraph of nodes and edges for visualizing how the brain's pages relate. Use `nodeLimit` to keep the payload small enough to draw. Returns edges, nodes, truncated. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "nodeLimit": {
+         "type": "integer"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_graph",
+    "title": "Connection graph"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_index"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return a compact index of the brain's top pages, formatted for injection into an LLM prompt. This is the intended way to give an agent working context without sending the whole brain. Returns array. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "limit": {
+         "type": "integer"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_index",
+    "title": "Prompt index"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_listConnections"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List connections across the whole brain with offset pagination. Filter by strength, or restrict to connections the user has not yet dismissed. Returns items, limit, offset. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "limit": {
+         "type": "integer"
+        },
+        "offset": {
+         "type": "integer"
+        },
+        "strength": {
+         "description": "Minimum strength (inclusive)",
+         "enum": [
+          "weak",
+          "medium",
+          "strong"
+         ],
+         "type": "string"
+        },
+        "unackedOnly": {
+         "type": "boolean"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_list_connections",
+    "title": "List connections"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_listPages"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List pages in a brain with offset pagination. Filter by bucket or status, and optionally include deprecated pages that are normally hidden. Returns items, limit, offset. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "bucket": {
+         "enum": [
+          "inbox",
+          "notes",
+          "ideas",
+          "projects"
+         ],
+         "type": "string"
+        },
+        "includeArchived": {
+         "description": "Include archived pages in the results. Archived pages are hidden from lists and search by default.",
+         "type": "boolean"
+        },
+        "includeDeprecated": {
+         "type": "boolean"
+        },
+        "limit": {
+         "type": "integer"
+        },
+        "offset": {
+         "type": "integer"
+        },
+        "status": {
+         "enum": [
+          "active",
+          "deprecated",
+          "stale",
+          "contested",
+          "archived"
+         ],
+         "type": "string"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_list_pages",
+    "title": "List pages"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_moveBucket"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Move a page into a different bucket. Buckets are the brain's top-level organizational grouping. Returns archived, backlinks, body. Requires brainId, slug, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "bucket": {
+         "description": "Top-level grouping the page belongs to.",
+         "enum": [
+          "inbox",
+          "notes",
+          "ideas",
+          "projects"
+         ],
+         "type": "string"
+        }
+       },
+       "required": [
+        "bucket"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_move_bucket",
+    "title": "Move a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_pageConnections"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List the connections attached to a single page, with the related page inlined on each connection. Returns items, pageId. Requires brainId, slug and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_page_connections",
+    "title": "Connections for a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_pageVersions"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "List a page's version history, newest first. Every content edit and automated recompile produces a version. Returns array. Requires brainId, slug and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_page_versions",
+    "title": "Page version history"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_pin"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Pin or unpin a page. Pinned pages are prioritized in the prompt index and are exempt from deprecation. Returns archived, backlinks, body. Requires brainId, slug, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "pinned": {
+         "description": "Pin or unpin",
+         "type": "boolean"
+        }
+       },
+       "required": [
+        "pinned"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_pin",
+    "title": "Pin or unpin a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_profileSuggestions"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Suggest profile fields inferred from what the brain already contains. Best-effort: returns an empty set when there is not yet enough signal. Returns brainId, suggestions. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_profile_suggestions",
+    "title": "Profile suggestions"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_recover"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Recover a deprecated page and return it to active status. Returns archived, backlinks, body. Requires brainId, slug and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_recover",
+    "title": "Recover a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_rename"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Rename a page's title and slug. Existing connections follow the page, but any external references to the old slug will break. Returns archived, backlinks, body. Requires brainId, slug, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "newSlug": {
+         "description": "New URL-safe slug. External references to the old slug will stop resolving.",
+         "type": "string"
+        },
+        "title": {
+         "description": "Human-readable title.",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_rename",
+    "title": "Rename a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_resolve"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Resolve a contested page. A page becomes contested when newly captured material contradicts what the page already asserts; resolving records which version wins. Returns archived, backlinks, body. Requires brainId, slug, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "resolution": {
+         "description": "Resolution note",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_resolve",
+    "title": "Resolve a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_restore"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Restore an archived page and return it to active status, so it reappears in lists and search. Returns archived, backlinks, body. Requires brainId, slug and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_restore",
+    "title": "Restore a page"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_reviewed"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Legacy alias for recovering a deprecated page. Prefer `recover` in new code; this endpoint is retained for backwards compatibility. Returns archived, backlinks, body. Requires brainId, slug and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "slug": {
+       "description": "Page slug",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId",
+      "slug"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_reviewed",
+    "title": "Recover a page (legacy)"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_scoreHistory"
+    },
+    "annotations": {
+     "openWorldHint": true,
+     "readOnlyHint": true
+    },
+    "description": "Return the score trend over a time range, including the delta versus the start of the period. Returns brainId, delta, items. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      },
+      "params": {
+       "additionalProperties": false,
+       "properties": {
+        "range": {
+         "enum": [
+          "7d",
+          "30d",
+          "90d"
+         ],
+         "type": "string"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_score_history",
+    "title": "Score trend history"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_scoreSuggestions"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Return concrete, ranked suggestions for raising the brain's health score, derived from whichever factors are currently weakest. Returns brainId, computedAt, generatedBy. Requires brainId and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_score_suggestions",
+    "title": "Score suggestions"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_searchPages"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Search pages using combined semantic and keyword matching. Results are ranked by relevance and include a snippet showing why each page matched. Returns array. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "minSimilarity": {
+         "default": 0.35,
+         "description": "Minimum similarity (0-1)",
+         "type": "number"
+        },
+        "query": {
+         "description": "Search query",
+         "type": "string"
+        },
+        "topK": {
+         "default": 5,
+         "description": "Max results",
+         "type": "integer"
+        }
+       },
+       "required": [
+        "query"
+       ],
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_search_pages",
+    "title": "Search pages"
+   },
+   {
+    "_meta": {
+     "fern/errors": [
+      {
+       "name": "HTTP 400",
+       "status": "400"
+      },
+      {
+       "name": "HTTP 401",
+       "status": "401"
+      },
+      {
+       "name": "HTTP 404",
+       "status": "404"
+      }
+     ],
+     "openapi/operationId": "workspace_updateProfile"
+    },
+    "annotations": {
+     "destructiveHint": false,
+     "idempotentHint": false,
+     "openWorldHint": true,
+     "readOnlyHint": false
+    },
+    "description": "Update the brain profile's directives. These take effect on subsequent captures, not retroactively. Returns brainId, createdAt, currentProjects. Requires brainId, body and authentication.",
+    "inputSchema": {
+     "additionalProperties": false,
+     "properties": {
+      "body": {
+       "additionalProperties": false,
+       "properties": {
+        "currentProjects": {
+         "description": "Projects in flight. Omit to leave unchanged.",
+         "type": "string"
+        },
+        "directives": {
+         "additionalProperties": false,
+         "properties": {
+          "challengeAssumptions": {
+           "description": "Challenge the user's assumptions before agreeing",
+           "type": "boolean"
+          },
+          "custom": {
+           "description": "Custom free-form directives",
+           "type": "string"
+          },
+          "flagContradictions": {
+           "description": "Flag contradictions with earlier saved beliefs",
+           "type": "boolean"
+          },
+          "preferVaultContext": {
+           "description": "Answer from vault context, not generically",
+           "type": "boolean"
+          },
+          "surfaceConnections": {
+           "description": "Surface non-obvious connections between captures",
+           "type": "boolean"
+          }
+         },
+         "type": "object"
+        },
+        "focus": {
+         "description": "Current focus. Omit to leave unchanged.",
+         "type": "string"
+        },
+        "goals": {
+         "description": "Current goals. Omit to leave unchanged.",
+         "type": "string"
+        },
+        "stuckOn": {
+         "description": "Known blockers. Omit to leave unchanged.",
+         "type": "string"
+        },
+        "vaultOrganization": {
+         "description": "Organization preference. Omit to leave unchanged.",
+         "type": "string"
+        },
+        "whatTheyDo": {
+         "description": "What the subject works on. Omit to leave unchanged.",
+         "type": "string"
+        },
+        "whoTheyAre": {
+         "description": "Who the subject is. Omit to leave unchanged.",
+         "type": "string"
+        }
+       },
+       "type": "object"
+      },
+      "brainId": {
+       "description": "Brain id",
+       "type": "string"
+      }
+     },
+     "required": [
+      "brainId"
+     ],
+     "type": "object"
+    },
+    "name": "workspace_update_profile",
+    "title": "Update the profile"
+   }
+  ]
+ },
+ "jsonrpc": "2.0",
+ "id": 2
+}
