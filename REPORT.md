@@ -1,5 +1,7 @@
 # Living Brain リバースエンジニアリング 一次調査レポート
 
+> やさしい図解版: https://elrdn.github.io/living-brain-reverse-engineering/
+
 対象: `livingbrain.com` / `docs.livingbrain.com` / `api.livingbrain.com` / `livingbrain.fernmcp.dev` / 公開SDK・CLI・GitHub
 手法: REA（受動的Web観測 + 成果物静的解析）+ 一次資料の直接取得 + ベンチマーク一次データによる再計算
 調査日: 2026-11-06
