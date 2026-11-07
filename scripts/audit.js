@@ -41,7 +41,7 @@
   const ctrls = [...doc.querySelectorAll("a,button,summary,input")];
   const samples = [...doc.querySelectorAll("p,li,span,a,b,small,figcaption,summary,h1,h2,h3")]
     .filter((el) => el.children.length === 0 && (el.textContent || "").trim().length > 2)
-    .filter((el) => el.getBoundingClientRect().width > 0)
+    .filter((el) => el.getBoundingClientRect().width > 0 && !el.closest("[aria-hidden=true]"))
     .slice(0, 300);
 
   const fails = samples
