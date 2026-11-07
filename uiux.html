@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Living Brain の UI/UX — リサーチノート</title>
+<meta name="description" content="Living Brain の UI/UX を、実測と画面証拠で整理。4つの視覚言語、ヘッダーの可読性、アプリの情報設計、アクセシビリティ監査。">
+<style>
+  :root{
+    --ink:#16151a; --ink-2:#4a4854; --ink-3:#67646f;
+    --paper:#f7f5f0; --card:#ffffff; --line:#e0dbd1; --line-2:#cfc8bb;
+    --accent:#c8451f; --accent-soft:#fbeae3;
+    --indigo:#2f2a6b; --indigo-soft:#ecebf7;
+    --teal:#0c6f6a; --teal-soft:#e2f2f0;
+    --gold:#a8761a; --gold-soft:#fbf1da;
+    --r:14px;
+    --shadow:0 1px 2px rgba(22,21,26,.04), 0 18px 40px -28px rgba(22,21,26,.45);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+  a{color:var(--ink);text-decoration-color:var(--line-2);text-underline-offset:.22em}
+  a:hover{text-decoration-color:var(--accent)}
+  a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  .skip{position:absolute;left:-9999px}
+  .skip:focus{left:16px;top:16px;background:#fff;padding:10px 16px;border:2px solid var(--ink);z-index:99}
+
+  nav{position:sticky;top:0;z-index:30;background:rgba(247,245,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;text-decoration:none}
+  .logo .mark{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff7a4d,var(--accent) 60%,#8f2f13)}
+  nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+  nav ul a{display:block;padding:7px 10px;font-size:12.5px;color:var(--ink-2);text-decoration:none;border-radius:7px}
+  nav ul a:hover{background:#efece4;color:var(--ink)}
+  nav ul a.on{color:var(--accent);font-weight:700}
+
+  .hero{padding:84px 0 60px;border-bottom:1px solid var(--line)}
+  .eyebrow{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--accent)}
+  h1{font-size:clamp(36px,6vw,66px);line-height:1.14;letter-spacing:-.03em;font-weight:800;margin:22px 0 20px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{font-size:clamp(16px,2.1vw,20px);line-height:1.9;color:var(--ink-2);max-width:40em;margin:0}
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:44px}
+  .fact{background:var(--card);padding:18px}
+  .fact .k{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase}
+  .fact .v{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-top:4px;font-variant-numeric:tabular-nums}
+  .fact .s{font-size:12px;color:var(--ink-3);margin-top:2px}
+
+  section{padding:72px 0;border-bottom:1px solid var(--line);scroll-margin-top:64px}
+  .sec-head{display:grid;grid-template-columns:88px 1fr;gap:24px;align-items:start;margin-bottom:32px}
+  .sec-no{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--accent);padding-top:10px}
+  h2{font-size:clamp(26px,3.6vw,38px);line-height:1.3;letter-spacing:-.02em;margin:0;font-weight:800}
+  .sec-sub{color:var(--ink-2);font-size:16px;margin:8px 0 0;max-width:44em}
+  h3{font-size:19px;margin:0 0 8px;letter-spacing:-.01em}
+  p{margin:0 0 14px}
+  .muted{color:var(--ink-3);font-size:14px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+
+  /* colour chips */
+  .langs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .lang{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .lang .sw{height:76px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .lang .bd{padding:12px 14px}
+  .lang .bd b{display:block;font-size:14px}
+  .lang .bd span{font-size:12px;color:var(--ink-3)}
+  .sw.dark{background:#0b0a0f;color:#ff8a5c}
+  .sw.light{background:#f8f8f7;color:#5b4bf5;border-bottom:1px solid var(--line)}
+  .sw.docs{background:#0a0a0a;color:#b6aefc}
+  .sw.app{background:#f8f8f7;color:#5b4bf5;border-bottom:1px solid var(--line)}
+
+  /* header demo */
+  .demo{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;position:relative;margin-top:8px}
+  .demo .bar{height:44px;display:flex;align-items:center;gap:18px;padding:0 18px;font-size:12px;color:#fff;position:relative;z-index:2}
+  .demo .body{padding:26px 18px 30px;background:#f7f6f2}
+  .demo .body h4{margin:0;font-size:26px;line-height:1.2;letter-spacing:-.02em}
+  .demo .body p{margin:8px 0 0;color:#5b5866;font-size:13px}
+  .demo .flag{position:absolute;right:12px;top:52px;background:var(--accent);color:#fff;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:999px;z-index:3}
+
+  /* app diagram */
+  .app{display:grid;grid-template-columns:210px 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+  .app .side{background:#faf9f6;border-right:1px solid var(--line);padding:14px;font-size:12px}
+  .app .side .ws{background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:11px;color:var(--ink-3);margin-bottom:12px}
+  .app .side .grp{font-size:9.5px;letter-spacing:.12em;color:var(--ink-3);margin:12px 0 5px}
+  .app .side .it{padding:4px 6px;border-radius:6px;color:var(--ink-2)}
+  .app .side .it.on{background:#efece4;color:var(--ink);font-weight:700}
+  .app .side .pay{margin-top:16px;border:1px solid #f0cfc4;background:#fffaf8;border-radius:8px;padding:8px;font-size:10.5px;color:#8a4a33}
+  .app .main{padding:18px 20px}
+  .app .main .t{font-size:20px;font-weight:800;letter-spacing:-.02em}
+  .app .main .d{font-size:12px;color:var(--ink-3);margin:2px 0 12px}
+  .app .main .c{border:1px solid var(--line);border-radius:9px;padding:12px;margin-bottom:10px;background:#fff}
+  .app .main .c b{font-size:12.5px;display:block;margin-bottom:4px}
+  .app .main .c i{display:block;height:7px;background:#f0ede6;border-radius:4px;margin:5px 0}
+  .app .main .c i.s{width:55%}
+
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  .sev{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:999px}
+  .sev.high{background:var(--accent-soft);color:#9c3315}
+  .sev.mid{background:var(--gold-soft);color:#7a5410}
+  .sev.low{background:#eeece6;color:#5b5866}
+
+  figure{margin:22px 0 0}
+  figure img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:#fff}
+  figcaption{font-size:12px;color:var(--ink-3);margin-top:8px}
+  figcaption b{color:var(--ink-2);font-weight:700}
+  details{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+  summary{cursor:pointer;font-size:13.5px;font-weight:700;color:#b03c19}
+
+  .callout{display:grid;grid-template-columns:34px 1fr;gap:14px;background:var(--gold-soft);border:1px solid #eddfb9;border-radius:12px;padding:16px 18px;margin-top:18px}
+  .callout .i{font-size:18px;line-height:1.4}
+  .callout b{display:block;font-size:14px;margin-bottom:2px}
+  .callout p{margin:0;font-size:13.5px;color:#5f4a1c}
+
+  footer{padding:56px 0 72px;color:var(--ink-3);font-size:13.5px}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 26px}
+  .btn{display:inline-block;text-decoration:none;font-size:13.5px;font-weight:700;padding:10px 18px;border-radius:999px;background:var(--ink);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+  .btn:hover{opacity:.9}
+
+  @media (max-width:900px){
+    .facts,.langs{grid-template-columns:1fr 1fr}
+    .sec-head{grid-template-columns:1fr;gap:6px}
+    .sec-no{padding-top:0}
+    .grid-2,.grid-3{grid-template-columns:1fr}
+    .app{grid-template-columns:1fr}
+    .app .side{display:none}
+  }
+  @media (max-width:640px){ nav ul{display:none} .hero{padding:56px 0 44px} section{padding:56px 0} }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">本文へスキップ</a>
+
+<nav aria-label="目次">
+  <div class="wrap">
+    <a class="logo" href="index.html"><span class="mark" aria-hidden="true"></span>Living Brain リサーチノート</a>
+    <ul>
+      <li><a href="index.html">図解</a></li>
+      <li><a href="#langs">4つの言語</a></li>
+      <li><a href="#header">ヘッダー</a></li>
+      <li><a href="#app">アプリ</a></li>
+      <li><a href="#audit">監査</a></li>
+      <li><a href="#fix">改善</a></li>
+      <li><a class="on" href="uiux.html" aria-current="page">UI/UX</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="main">
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">UI/UX research · November 2026</div>
+    <h1>4つの顔を持つ<br><em>ひとつの製品</em>。</h1>
+    <p class="lead">
+      Living Brain の画面を、実測とスクリーンショットで調べました。
+      マーケティング、料金、ドキュメント、アプリ。それぞれは良くできていますが、
+      横に並べると別々のサービスに見えます。良さと欠陥を、証拠つきで整理します。
+    </p>
+    <div class="facts">
+      <div class="fact"><div class="k">撮影</div><div class="v">25</div><div class="s">画面（WebP）</div></div>
+      <div class="fact"><div class="k">視覚言語</div><div class="v">4</div><div class="s">面ごとに別系統</div></div>
+      <div class="fact"><div class="k">実測した欠陥</div><div class="v">1</div><div class="s">ヘッダーが読めない</div></div>
+      <div class="fact"><div class="k">監査</div><div class="v">0<span style="font-size:.55em">/128</span></div><div class="s">自前ページのAA違反</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 -->
+<section id="langs">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">01</div>
+      <div>
+        <h2>4つの視覚言語</h2>
+        <p class="sec-sub">同じ製品なのに、面ごとに背景・アクセント・見出しの太さが違います。</p>
+      </div>
+    </div>
+
+    <div class="langs">
+      <div class="lang">
+        <div class="sw dark">ORANGE / BLACK</div>
+        <div class="bd"><b>マーケティング</b><span>黒背景・オレンジ・56px / 500</span></div>
+      </div>
+      <div class="lang">
+        <div class="sw light">PURPLE / WHITE</div>
+        <div class="bd"><b>料金</b><span>白背景・紫・60px / 500</span></div>
+      </div>
+      <div class="lang">
+        <div class="sw docs">PURPLE / BLACK</div>
+        <div class="bd"><b>ドキュメント</b><span>黒背景・紫・56px / 700</span></div>
+      </div>
+      <div class="lang">
+        <div class="sw app">PURPLE / WHITE</div>
+        <div class="bd"><b>アプリ</b><span>白背景・紫＋黒・24px / 500</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="i" aria-hidden="true">◆</div>
+      <div>
+        <b>書体は統一、太さは不統一</b>
+        <p>すべて ChatSans ですが、見出しの weight が 500 と 700 で分かれます。主ボタンの色も黒・紫・白の3種あり、どれが主要操作か一定しません。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="marketing">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">02</div>
+      <div>
+        <h2>マーケティングサイト</h2>
+        <p class="sec-sub">WebGLのヒーロー、数字カード、抽象概念の図解。見せ方は非常に強い。</p>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/ui-01-home-hero.webp" alt="Living Brain のヒーロー。黒背景に「One Living Brain. Every AI.」と Create Account ボタン、粒子のネットワーク。" loading="lazy" width="2880" height="1800">
+      <figcaption><b>ヒーロー</b> 14個のクリック可能なノード（Claude / Cursor / Memory MCP など）を持つ探索UI。装飾ではなく <code>button</code> として実装されています。</figcaption>
+    </figure>
+
+    <figure>
+      <img src="screenshots/ui-05-metrics.webp" alt="ベンチマークのカード群。92.2%、22.6X、95%、0%、94.7%、464ms。" loading="lazy" width="2880" height="1800">
+      <figcaption><b>数値カード</b> アイコン＋見出し＋巨大数字＋補足の4層。22.6X には3Dのコイン比較が添えられ、数字を図で補っています。</figcaption>
+    </figure>
+
+    <div class="grid-2" style="margin-top:20px">
+      <div class="panel">
+        <h3>良い点</h3>
+        <p class="muted" style="margin:0">数字が主役で、視線が自然に落ちる。抽象概念（情報の整理）を「散らばったファイルが集まる」図に置き換えている。スクロールのリズムが一定。</p>
+      </div>
+      <div class="panel">
+        <h3>気になる点</h3>
+        <p class="muted" style="margin:0">価値の説明が約2,300px下まで出てこない。ヒーローは「きれいな宇宙」が先に立つ。CTAは明確なので致命傷ではない。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="header">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">03</div>
+      <div>
+        <h2>ヘッダーが読めない時間がある</h2>
+        <p class="sec-sub">実測した唯一の「明確な欠陥」です。</p>
+      </div>
+    </div>
+
+    <p>ヘッダーは <code>position: sticky</code>、高さ96px、背景は完全な透明、リンク色は白。スクロール位置 0 / 2250 / 3400 / 5000 / 5800 のすべてで同じでした。明るいセクションの上では、白文字が白背景に乗ります。</p>
+
+    <div class="demo" role="img" aria-label="透明なヘッダーの再現図。白文字が明るい背景に重なり、下の見出しと衝突している。">
+      <div class="flag">再現図</div>
+      <div class="bar" style="background:transparent">
+        <strong style="font-weight:800">Living Brain</strong>
+        <span>API Docs</span><span>Pricing</span><span>Newsroom</span><span>Company</span><span>Contact</span>
+      </div>
+      <div class="body">
+        <h4>Bring your Living Brain everywhere</h4>
+        <p>この帯に白いナビ文字が重なるため、判読できません。</p>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/ui-06-everywhere.webp" alt="実際の画面。透明なヘッダーの白いナビ文字が、明るい背景と見出しに重なって読めなくなっている。" loading="lazy" width="2880" height="1800">
+      <figcaption><b>実際の画面（3,400px地点）</b> ナビの文字と「Bring your Living Brain everywhere」が衝突しています。</figcaption>
+    </figure>
+
+    <div class="callout">
+      <div class="i" aria-hidden="true">▲</div>
+      <div>
+        <b>原因の推測</b>
+        <p>上部の暗いスクリムはセクション側の装飾で、ヘッダー自身は背景を持っていません。そのためセクションの切り替わりで可読性が落ちます。ヘッダーに <code>backdrop-filter</code> と半透明背景を持たせるのが定石です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">04</div>
+      <div>
+        <h2>料金ページ</h2>
+        <p class="sec-sub">3列のカードは整っていますが、比較の軸が揃っていません。</p>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/ui-04-pricing-hero.webp" alt="料金ページ。API 8ドル、Workspace 99ドル、Business は個別見積の3列。" loading="lazy" width="2880" height="1800">
+      <figcaption><b>3プラン</b> 単位が「100万トークン」「月額」「見積」で異なり、横並びで比較できません。</figcaption>
+    </figure>
+
+    <div class="grid-3" style="margin-top:20px">
+      <div class="panel"><h3>構造</h3><p class="muted" style="margin:0">価格 → 説明 → ボタンの順序は3列で揃っている。中央だけ紫の枠と淡い背景で「MOST POPULAR」。</p></div>
+      <div class="panel"><h3>単位</h3><p class="muted" style="margin:0">$8 / 1M tokens、$99 / month、Custom。並列なのに計算できない。</p></div>
+      <div class="panel"><h3>強調</h3><p class="muted" style="margin:0">紫（Start Workspace）と黒（Discuss your deployment）が混在し、優先順位が色で読めない。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="docs">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">05</div>
+      <div>
+        <h2>ドキュメント</h2>
+        <p class="sec-sub">開発者向けの要素は揃っています。1点だけAA違反。</p>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/ui-13-docs-home.webp" alt="ドキュメントのトップ。黒背景に紫のアクセント、検索欄と Ask AI ボタン、コード例。" loading="lazy" width="2880" height="1800">
+      <figcaption><b>docs.livingbrain.com</b> 検索の <code>/</code> ショートカット、<code>Ask AI</code>、コード例。Fern 生成。</figcaption>
+    </figure>
+
+    <p style="margin-top:18px"><b>実測</b>: <code>Sign in</code> ボタンのコントラストは <b>2.7:1</b>（14px）。WCAG AA の 4.5:1 を下回ります。</p>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="app">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">06</div>
+      <div>
+        <h2>アプリ（ログイン後）</h2>
+        <p class="sec-sub">サイドバー型で情報密度が高い。定番の構造で迷いにくいが、入口が重複しています。</p>
+      </div>
+    </div>
+
+    <div class="app" role="img" aria-label="アプリのシェル。左にサイドバー、右にページ見出しと白いカード。">
+      <div class="side">
+        <div class="ws">ワークスペース名 ▾</div>
+        <div class="grp">WORKSPACE</div>
+        <div class="it on">Home</div>
+        <div class="it">Projects</div>
+        <div class="it">Brain</div>
+        <div class="it">Billing &amp; Team</div>
+        <div class="grp">DEVELOPER</div>
+        <div class="it">API keys</div>
+        <div class="it">Webhooks</div>
+        <div class="pay">Pay as you go<br>1 of 1 brains - Upgrade</div>
+      </div>
+      <div class="main">
+        <div class="t">Webhooks</div>
+        <div class="d">Deliver signed brain events to the systems that depend on them.</div>
+        <div class="c"><b>Register a webhook</b><i></i><i class="s"></i></div>
+        <div class="c"><b>Subscriptions</b><i class="s"></i></div>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/app/app-06-home.webp" alt="アプリの Home。ヒーロー、ブレイン一覧、Quickstart、機能紹介。" loading="lazy" width="1800" height="1443">
+      <figcaption><b>Home</b> ヒーロー＋ブレイン一覧＋Quickstart。下部に「OR FROM YOUR AI」のコピペ用テンプレート。</figcaption>
+    </figure>
+
+    <div class="grid-2" style="margin-top:20px">
+      <div class="panel">
+        <h3>Home と Brain が重複</h3>
+        <p class="muted" style="margin:0">両方にブレインカードの一覧があります。Home は「ヒーロー＋一覧＋Quickstart」、Brain は「統計＋一覧」。初見では、どちらが本来の入口か分かりません。</p>
+      </div>
+      <div class="panel">
+        <h3>単位の混在</h3>
+        <p class="muted" style="margin:0">利用量が <code>1 / 1</code>、<code>0 / 3</code> と数字なのに、<code>Brains</code> だけ <code>1 / no fixed cap</code>。同じ表の中で表現が変わります。</p>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/app/app-03-billing.webp" alt="Billing & Team 画面。プラン、残高、プリペイド、利用量バー、チーム。" loading="lazy" width="1800" height="1235">
+      <figcaption><b>Billing &amp; Team</b> オレンジの利用量バーで現在値と上限を併記。個人情報はマスク済み。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 07 -->
+<section id="onboarding">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">07</div>
+      <div>
+        <h2>オンボーディングは、この製品で一番良い</h2>
+        <p class="sec-sub">手紙 → 数字 → 仕組み → 限界 → 試す。記憶製品に必要な信頼の作り方です。</p>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/app/app-07-onboarding.webp" alt="オンボーディング画面。左に創業者の手紙、右に Benefits の数値カード。" loading="lazy" width="1800" height="868">
+      <figcaption><b>Meet Your Living Brain</b> 左に署名付きの手紙、右に数字。</figcaption>
+    </figure>
+
+    <figure>
+      <img src="screenshots/app/app-08-onboarding-limits.webp" alt="オンボーディングの下部。How it works と Limitations のアコーディオン、CTA。" loading="lazy" width="1800" height="1136">
+      <figcaption><b>Limitations</b> 「与えたものしか知らない」「チャットアプリではない」「古い記憶は指示するまで残る」。数字の直後に、できないことを並べています。</figcaption>
+    </figure>
+
+    <div class="callout">
+      <div class="i" aria-hidden="true">◆</div>
+      <div>
+        <b>なぜ効くのか</b>
+        <p>記憶製品の導入障壁は「何を覚えているか分からない」という不安です。Limitations を先に開示すると、期待値が揃い、クレームではなく仕様として受け取られます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section id="responsive">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">08</div>
+      <div>
+        <h2>モバイル</h2>
+        <p class="sec-sub">レイアウトは崩れませんが、文言が途中で切れます。</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <figure style="margin:0">
+        <img src="screenshots/ui-15-mobile-home.webp" alt="モバイルのヒーロー。390px幅。" loading="lazy" width="780" height="1688">
+        <figcaption><b>390px</b> 横スクロールは出ません。</figcaption>
+      </figure>
+      <figure style="margin:0">
+        <img src="screenshots/ui-17-mobile-menu.webp" alt="モバイルのメニューを開いた状態。" loading="lazy" width="780" height="1688">
+        <figcaption><b>メニュー</b> 黒いパネルに5項目＋Sign In。</figcaption>
+      </figure>
+    </div>
+
+    <p style="margin-top:18px"><b>実測</b>: 「Compatible with [ロゴ] And 60+ AI Platforms」の <code>AI Platforms</code> は <code>display: none</code>。画面には <b>「And 60+」だけ</b>が残り、文が途中で終わって見えます。</p>
+  </div>
+</section>
+
+<!-- 09 -->
+<section id="audit">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">09</div>
+      <div>
+        <h2>アクセシビリティ監査（実測）</h2>
+        <p class="sec-sub">各ページでDOMと計算スタイルを読み、コントラストとタップ領域を計算しました。</p>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>ページ</th><th style="text-align:right">h1</th><th style="text-align:right">見出し飛び</th><th style="text-align:right">alt欠落</th><th style="text-align:right">コントラスト</th><th style="text-align:right">24px未満</th></tr></thead>
+      <tbody>
+        <tr><td>ホーム</td><td class="num">2</td><td class="num">1</td><td class="num">0/10</td><td class="num">1/300</td><td class="num">16/121</td></tr>
+        <tr><td>料金</td><td class="num">1</td><td class="num">1</td><td class="num">—</td><td class="num">0/157</td><td class="num">7/23</td></tr>
+        <tr><td>ドキュメント</td><td class="num">1</td><td class="num">0</td><td class="num">0/1</td><td class="num">1/73</td><td class="num">16/62</td></tr>
+        <tr><td>アプリ入口</td><td class="num">1</td><td class="num">0</td><td class="num">—</td><td class="num">0/2</td><td class="num">0/3</td></tr>
+      </tbody>
+    </table>
+
+    <p class="muted" style="margin-top:12px">ホームは <code>main</code> が2つ、名前のない <code>navigation</code> が2つ。見出し27個のうち8個が名前を持ちません。</p>
+  </div>
+</section>
+
+<!-- 10 -->
+<section id="fix">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">10</div>
+      <div>
+        <h2>問題と改善</h2>
+        <p class="sec-sub">重大度順。上から直すと効果が大きい順です。</p>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th>問題</th><th>重大度</th><th>直し方</th></tr></thead>
+      <tbody>
+        <tr><td>ヘッダーが透明＋白文字で読めない</td><td><span class="sev high">高</span></td><td>ヘッダー自身に半透明背景と <code>backdrop-filter</code></td></tr>
+        <tr><td>サインインが2系統ある</td><td><span class="sev high">高</span></td><td>片方に統一し、もう片方はリダイレクト</td></tr>
+        <tr><td>主ボタンの色が3種</td><td><span class="sev high">高</span></td><td>紫＝主要、黒＝確定、白＝マーケ と役割を固定</td></tr>
+        <tr><td>モバイルで文が切れる</td><td><span class="sev mid">中</span></td><td><code>AI Platforms</code> を消さず、短い表現に差し替える</td></tr>
+        <tr><td>Home と Brain の重複</td><td><span class="sev mid">中</span></td><td>Home＝次の行動、Brain＝一覧と管理に分ける</td></tr>
+        <tr><td>h1・main・nav の重複</td><td><span class="sev mid">中</span></td><td>sr-only の h1 を削除、nav に <code>aria-label</code></td></tr>
+        <tr><td>「get thing done」</td><td><span class="sev mid">中</span></td><td>「get things done」に校正</td></tr>
+        <tr><td>料金の単位混在</td><td><span class="sev low">低</span></td><td>「1ユーザーあたり月額」に換算して併記</td></tr>
+      </tbody>
+    </table>
+
+    <div class="links">
+      <a class="btn" href="REPORT-UIUX.md">詳細レポート（Markdown）</a>
+      <a class="btn ghost" href="index.html">図解トップへ</a>
+      <a class="btn ghost" href="https://github.com/ELRdn/living-brain-reverse-engineering">GitHub</a>
+    </div>
+
+    <p class="muted">
+      証拠画像は25点（WebP）。ログイン後の画面はユーザー提供で、個人情報はマスク済みです。
+      数値は <code>evidence/ui-audit-*.json</code> に生データがあります。
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Living Brain UI/UX リサーチノート ／ 調査日 2026年11月6–7日</p>
+  </div>
+</footer>
+
+</body>
+</html>
