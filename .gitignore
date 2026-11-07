@@ -10,3 +10,4 @@ artifacts/
 Thumbs.db
 __pycache__/
 screenshots/99-site-*
+screenshots/_qa-*
