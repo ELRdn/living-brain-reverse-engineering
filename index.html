@@ -3,358 +3,622 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Living Brain を やさしく 図解する</title>
-<meta name="description" content="AIの記憶をAIの外に置く Living Brain。しくみ、数字のカラクリ、注意点を、こどもでもわかる言葉と図でまとめました。">
+<title>Living Brain — AIの記憶を、モデルの外に置く</title>
+<meta name="description" content="Living Brain の仕組み・ベンチマーク・注意点を、図で整理したリサーチノート。公開仕様と一次データから再構成しました。">
 <style>
   :root{
-    --ink:#14131a;
-    --ink-soft:#55535f;
-    --paper:#fbfaf7;
+    --ink:#16151a;
+    --ink-2:#4a4854;
+    --ink-3:#7a7786;
+    --paper:#f7f5f0;
     --card:#ffffff;
-    --line:#e6e2da;
-    --orange:#ef5b2a;
-    --orange-soft:#fdece5;
-    --violet:#6b5cf0;
-    --violet-soft:#eceafe;
-    --teal:#0b8f8a;
-    --teal-soft:#e3f5f3;
-    --yellow-soft:#fdf3dc;
-    --radius:18px;
-    --shadow:0 1px 0 rgba(20,19,26,.05), 0 14px 34px -22px rgba(20,19,26,.4);
+    --line:#e0dbd1;
+    --line-2:#cfc8bb;
+    --accent:#c8451f;
+    --accent-soft:#fbeae3;
+    --indigo:#2f2a6b;
+    --indigo-soft:#ecebf7;
+    --teal:#0c6f6a;
+    --teal-soft:#e2f2f0;
+    --gold:#a8761a;
+    --gold-soft:#fbf1da;
+    --r:14px;
+    --shadow:0 1px 2px rgba(22,21,26,.04), 0 18px 40px -28px rgba(22,21,26,.45);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{animation:none!important;transition:none!important} }
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.9;font-size:17px;-webkit-font-smoothing:antialiased}
-  a{color:var(--ink);text-underline-offset:.2em}
-  a:focus-visible,button:focus-visible{outline:3px solid var(--orange);outline-offset:3px;border-radius:6px}
-  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+  a{color:var(--ink);text-decoration-color:var(--line-2);text-underline-offset:.22em}
+  a:hover{text-decoration-color:var(--accent)}
+  a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:4px}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  .narrow{max-width:760px}
   .skip{position:absolute;left:-9999px}
   .skip:focus{left:16px;top:16px;background:#fff;padding:10px 16px;border:2px solid var(--ink);z-index:99}
 
-  nav{position:sticky;top:0;z-index:20;background:rgba(12,11,16,.94);backdrop-filter:blur(8px);border-bottom:1px solid #2b2935}
-  nav .wrap{display:flex;gap:8px;align-items:center;justify-content:space-between;padding-top:10px;padding-bottom:10px}
-  nav .brand{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;color:#fff}
-  nav .brand i{width:16px;height:16px;border-radius:50%;background:var(--orange);display:inline-block}
-  nav ul{display:flex;gap:2px;list-style:none;margin:0;padding:0;flex-wrap:wrap;justify-content:flex-end}
-  nav a{display:inline-block;padding:8px 10px;font-size:13px;text-decoration:none;border-radius:999px;color:#c9c6d6}
-  nav a:hover{background:#1c1b26;color:#fff}
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:30;background:rgba(247,245,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;letter-spacing:.01em;text-decoration:none}
+  .logo .mark{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#ff7a4d,var(--accent) 60%,#8f2f13)}
+  nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+  nav ul a{display:block;padding:7px 10px;font-size:12.5px;color:var(--ink-2);text-decoration:none;border-radius:7px}
+  nav ul a:hover{background:#efece4;color:var(--ink)}
 
-  .hero{background:#0c0b10;color:#fff;padding:72px 0 60px;position:relative;overflow:hidden}
-  .hero::after{content:"";position:absolute;inset:auto -10% -60% -10%;height:70%;background:radial-gradient(60% 60% at 50% 50%,rgba(107,92,240,.45),transparent 70%);pointer-events:none}
-  .hero .wrap{position:relative;z-index:1}
-  .hero .kicker{display:inline-flex;gap:8px;align-items:center;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#ffb59b;background:rgba(239,91,42,.14);padding:6px 14px;border-radius:999px}
-  .hero h1{font-size:clamp(34px,6vw,62px);line-height:1.15;letter-spacing:-.02em;margin:20px 0 16px;font-weight:800}
-  .hero h1 .thin{font-weight:300;color:#c9c6d6}
-  .hero p{color:#c9c6d6;font-size:clamp(16px,2.3vw,20px);max-width:36em;margin:0}
-  .hero .three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:36px}
-  .hero .three div{border:1px solid #2b2935;background:#141320;border-radius:14px;padding:16px}
-  .hero .three b{display:block;font-size:20px;margin-bottom:2px}
-  .hero .three span{font-size:13px;color:#a8a5b8}
+  /* ---------- hero ---------- */
+  .hero{padding:84px 0 64px;border-bottom:1px solid var(--line)}
+  .eyebrow{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--accent)}
+  h1{font-size:clamp(38px,6.4vw,72px);line-height:1.14;letter-spacing:-.03em;font-weight:800;margin:22px 0 20px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{font-size:clamp(16px,2.1vw,20px);line-height:1.9;color:var(--ink-2);max-width:40em;margin:0}
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:44px}
+  .fact{background:var(--card);padding:18px 18px 16px}
+  .fact .k{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase}
+  .fact .v{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-top:4px;font-variant-numeric:tabular-nums}
+  .fact .s{font-size:12px;color:var(--ink-3);margin-top:2px}
 
-  section{padding:56px 0;border-top:1px solid var(--line);scroll-margin-top:72px}
-  h2{font-size:clamp(24px,4vw,36px);line-height:1.3;margin:0 0 8px;letter-spacing:-.01em;font-weight:800}
-  .sub{color:var(--ink-soft);margin:0 0 28px;font-size:16px}
-  h3{font-size:19px;margin:0 0 6px}
+  /* ---------- sections ---------- */
+  section{padding:72px 0;border-bottom:1px solid var(--line);scroll-margin-top:64px}
+  .sec-head{display:grid;grid-template-columns:88px 1fr;gap:24px;align-items:start;margin-bottom:34px}
+  .sec-no{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--accent);padding-top:10px}
+  h2{font-size:clamp(26px,3.6vw,38px);line-height:1.3;letter-spacing:-.02em;margin:0;font-weight:800}
+  .sec-sub{color:var(--ink-2);font-size:16px;margin:8px 0 0;max-width:44em}
+  h3{font-size:19px;margin:0 0 8px;letter-spacing:-.01em}
+  p{margin:0 0 14px}
+  .muted{color:var(--ink-3);font-size:14px}
 
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-  .panel.bad{border-color:#f0cfc4;background:#fffaf8}
-  .panel h3{display:flex;gap:8px;align-items:center}
-  .pill{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--orange-soft);color:#a63b16}
-  .stack{display:grid;gap:8px;margin-top:12px}
-  .row{display:flex;align-items:center;gap:8px;font-size:14px}
-  .row .box{flex:1;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;background:#fff;font-weight:700;font-size:13px}
-  .row .box small{display:block;font-weight:400;color:var(--ink-soft);font-size:11px}
-  .arrowdown{text-align:center;font-size:20px;color:var(--ink-soft);line-height:1}
+  /* ---------- generic panels ---------- */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 
-  .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:8px}
-  .step{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:14px 12px;box-shadow:4px 4px 0 var(--ink);position:relative}
-  .step .n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--violet);color:#fff;font-size:13px;font-weight:800;align-items:center;justify-content:center;margin-bottom:8px}
-  .step b{display:block;font-size:15px;line-height:1.5}
-  .step span{font-size:12px;color:var(--ink-soft);line-height:1.6;display:block;margin-top:2px}
-  .note{font-size:13px;color:var(--ink-soft);margin-top:12px}
+  /* ---------- diagram: silos ---------- */
+  .silos{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .silo-col{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+  .silo-col h3{display:flex;align-items:center;gap:10px;font-size:15px;letter-spacing:.02em}
+  .tag{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+  .tag.bad{background:var(--accent-soft);color:#9c3315}
+  .tag.good{background:var(--teal-soft);color:var(--teal)}
+  .tool{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:9px;background:#fdfcfa}
+  .tool .dot{width:9px;height:9px;border-radius:50%;background:var(--line-2);flex:0 0 auto}
+  .tool b{font-size:14px;font-weight:700}
+  .tool span{font-size:11.5px;color:var(--ink-3);margin-left:auto}
+  .hub{border:2px solid var(--teal);background:var(--teal-soft);border-radius:12px;padding:14px;margin-top:14px;text-align:center}
+  .hub b{display:block;font-size:15px}
+  .hub span{font-size:12px;color:var(--teal)}
+  .connector{height:18px;margin:0 auto;width:2px;background:var(--line-2)}
 
-  .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .compare .panel{position:relative}
-  .compare .panel.win{border-color:#b9e3de;background:#fbfffe}
-  .mini-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--ink-soft)}
-  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700}
-  .chip.v{background:var(--violet-soft);border-color:#d8d3fb;color:#3f31b8}
-  .chip.t{background:var(--teal-soft);border-color:#bfe6e2;color:#08615d}
+  /* ---------- pipeline ---------- */
+  .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:6px}
+  .pipe .step{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--indigo);border-radius:10px;padding:14px 12px 13px;position:relative}
+  .pipe .step .n{font-size:11px;font-weight:800;color:var(--indigo);letter-spacing:.08em}
+  .pipe .step b{display:block;font-size:14px;margin:3px 0 3px}
+  .pipe .step span{font-size:11.5px;line-height:1.65;color:var(--ink-3);display:block}
+  .pipe-note{display:flex;align-items:center;gap:12px;margin-top:16px;font-size:12.5px;color:var(--ink-2)}
+  .sync{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--accent);white-space:nowrap}
+  .sync::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .async{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--indigo);white-space:nowrap}
+  .async::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--indigo)}
 
-  .bars{display:grid;gap:12px;margin-top:8px}
-  .bar-row{display:grid;grid-template-columns:150px 1fr 90px;gap:12px;align-items:center;font-size:14px}
-  .bar{height:26px;border-radius:8px;background:var(--violet);opacity:.9}
-  .bar.grey{background:#cfcbd8}
-  .bar.orange{background:var(--orange)}
-  .bar-val{font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
-  .eq{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:clamp(22px,4vw,34px);font-weight:800;margin:18px 0 6px}
-  .eq span{font-variant-numeric:tabular-nums}
-  .eq .op{color:var(--ink-soft);font-weight:400}
+  /* ---------- data model ---------- */
+  .tree{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:2;background:#fbfaf6;border:1px solid var(--line);border-radius:12px;padding:18px 20px;overflow-x:auto;color:var(--ink-2)}
+  .tree b{color:var(--ink)}
+  .tree .c{color:var(--ink-3)}
+  .enum{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .enum code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink-2)}
 
-  .versus{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}
-  .num-card{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:18px;text-align:center;box-shadow:5px 5px 0 var(--ink)}
-  .num-card .big{font-size:clamp(34px,6vw,52px);font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
-  .num-card .lbl{font-size:13px;color:var(--ink-soft)}
-  .num-card .src{font-size:11px;color:var(--ink-soft);margin-top:6px}
-  .vs{display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:var(--orange)}
+  /* ---------- comparison ---------- */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .cmp .panel{display:flex;flex-direction:column}
+  .cmp .panel.win{border-color:#bfe0dc;background:#fcfffe}
+  .cmp p{font-size:14.5px;color:var(--ink-2);margin:0}
+  .flowline{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:14px 0;font-size:12px}
+  .node{background:#f2efe8;border:1px solid var(--line);border-radius:999px;padding:5px 11px;font-weight:600;color:var(--ink-2)}
+  .node.v{background:var(--indigo-soft);border-color:#d5d2ee;color:var(--indigo)}
+  .node.t{background:var(--teal-soft);border-color:#c8e6e2;color:var(--teal)}
+  .arrow{color:var(--ink-3)}
 
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-  .card .big{font-size:30px;line-height:1;margin-bottom:10px}
-  .card p{margin:0;font-size:15px;color:var(--ink-soft)}
-  .analogy{background:var(--yellow-soft);border-left:4px solid #f5b73d;padding:10px 14px;border-radius:0 10px 10px 0;font-size:14px;margin:12px 0}
-  .analogy b{font-weight:800}
+  /* ---------- bars ---------- */
+  .bars{display:grid;gap:14px;margin:6px 0 4px}
+  .bar-row{display:grid;grid-template-columns:180px 1fr 86px;gap:14px;align-items:center;font-size:14px}
+  .bar-row .lbl{color:var(--ink-2)}
+  .bar-track{background:#efebe2;border-radius:6px;height:24px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:6px;background:var(--indigo)}
+  .bar-fill.removed{background:var(--accent)}
+  .bar-fill.rest{background:var(--teal)}
+  .bar-val{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .equation{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;font-size:clamp(26px,4.4vw,40px);font-weight:800;letter-spacing:-.02em;margin:22px 0 6px;font-variant-numeric:tabular-nums}
+  .equation .op{color:var(--ink-3);font-weight:400}
+  .equation .res{color:var(--teal)}
 
-  .shot{margin:14px 0 0}
-  .shot img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
-  .shot figcaption{font-size:12px;color:var(--ink-soft);margin-top:6px}
-  details{margin-top:12px}
-  summary{cursor:pointer;font-size:13px;font-weight:700;color:#a63b16}
-  summary:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+  tr:last-child td{border-bottom:none}
 
-  .method{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-  .method div{background:var(--violet-soft);border-radius:14px;padding:16px}
-  .method b{display:block;margin-bottom:4px}
-  .method span{font-size:14px;color:var(--ink-soft)}
+  /* ---------- contradiction ---------- */
+  .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch}
+  .metric{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+  .metric .src{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+  .metric .val{font-size:clamp(38px,6vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+  .metric .unit{font-size:18px;font-weight:700;color:var(--ink-2)}
+  .metric .cap{font-size:13px;color:var(--ink-3)}
+  .neq{display:flex;align-items:center;justify-content:center;font-size:26px;color:var(--accent);font-weight:800}
 
-  footer{padding:40px 0 60px;border-top:1px solid var(--line);color:var(--ink-soft);font-size:14px}
-  .btn{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:700;font-size:14px}
-  .btn.alt{background:#fff;color:var(--ink);border:2px solid var(--ink)}
-  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  /* ---------- callouts ---------- */
+  .callout{display:grid;grid-template-columns:34px 1fr;gap:14px;background:var(--gold-soft);border:1px solid #eddfb9;border-radius:12px;padding:16px 18px;margin-top:18px}
+  .callout .i{font-size:18px;line-height:1.4}
+  .callout b{display:block;font-size:14px;margin-bottom:2px}
+  .callout p{margin:0;font-size:13.5px;color:#5f4a1c}
 
-  @media (max-width:820px){
-    .hero .three{grid-template-columns:1fr}
-    .split,.compare,.versus{grid-template-columns:1fr}
-    .vs{padding:4px 0}
-    .pipeline{grid-template-columns:1fr 1fr}
-    .bar-row{grid-template-columns:100px 1fr 64px;font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+  .card .num{font-size:11.5px;font-weight:800;letter-spacing:.1em;color:var(--accent)}
+  .card h3{font-size:16px;margin:6px 0 6px}
+  .card p{font-size:13.5px;color:var(--ink-2);margin:0}
+
+  /* ---------- figures ---------- */
+  figure{margin:22px 0 0}
+  figure img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:#fff}
+  figcaption{font-size:12px;color:var(--ink-3);margin-top:8px;display:flex;gap:8px;align-items:baseline}
+  figcaption b{color:var(--ink-2);font-weight:700}
+  details{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  summary{cursor:pointer;font-size:13.5px;font-weight:700;color:var(--accent)}
+
+  /* ---------- footer ---------- */
+  footer{padding:56px 0 72px;color:var(--ink-3);font-size:13.5px}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 26px}
+  .btn{display:inline-block;text-decoration:none;font-size:13.5px;font-weight:700;padding:10px 18px;border-radius:999px;background:var(--ink);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+  .btn:hover{opacity:.9}
+
+  @media (max-width:900px){
+    .facts{grid-template-columns:1fr 1fr}
+    .pipe{grid-template-columns:1fr 1fr}
+    .grid-3,.cards{grid-template-columns:1fr}
+    .sec-head{grid-template-columns:1fr;gap:6px}
+    .sec-no{padding-top:0}
   }
-  @media (max-width:640px){
+  @media (max-width:720px){
+    .silos,.cmp,.grid-2,.vs{grid-template-columns:1fr}
+    .neq{transform:rotate(90deg);padding:6px 0}
+    .bar-row{grid-template-columns:110px 1fr 64px;font-size:12.5px}
+    .bar-row .lbl{font-size:12.5px}
     nav ul{display:none}
-    nav .wrap{justify-content:flex-start}
-    .hero{padding-top:44px}
+    .hero{padding:56px 0 44px}
+    section{padding:56px 0}
   }
 </style>
 </head>
 <body>
-<a class="skip" href="#main">本文へ とぶ</a>
+<a class="skip" href="#main">本文へスキップ</a>
 
-<nav aria-label="ページ内メニュー">
+<nav aria-label="目次">
   <div class="wrap">
-    <span class="brand"><i aria-hidden="true"></i>Living Brain ずかん</span>
+    <a class="logo" href="#top"><span class="mark" aria-hidden="true"></span>Living Brain リサーチノート</a>
     <ul>
-      <li><a href="#problem">こまってた</a></li>
-      <li><a href="#how">しくみ</a></li>
-      <li><a href="#diff">ちがい</a></li>
-      <li><a href="#numbers">数字</a></li>
-      <li><a href="#careful">ちゅうい</a></li>
+      <li><a href="#what">概要</a></li>
+      <li><a href="#how">仕組み</a></li>
+      <li><a href="#model">データ</a></li>
+      <li><a href="#diff">RAGとの違い</a></li>
+      <li><a href="#bench">ベンチマーク</a></li>
+      <li><a href="#care">注意点</a></li>
     </ul>
   </div>
 </nav>
 
 <main id="main">
 
-<header class="hero">
+<header class="hero" id="top">
   <div class="wrap">
-    <span class="kicker">REA リサーチ ずかん</span>
-    <h1>AIの きおくを、<br><span class="thin">AIの そとに。</span></h1>
-    <p>Living Brain は、AIの「おぼえていること」を モデルの 外に とりだして、ChatGPT でも Claude でも Cursor でも つかえるように する サービスです。</p>
-    <div class="three">
-      <div><b>おぼえる</b><span>話したことを ためる</span></div>
-      <div><b>よびだす</b><span>ひつような ときだけ 出す</span></div>
-      <div><b>どこでも</b><span>べつの AI でも つかえる</span></div>
+    <div class="eyebrow">Reverse engineering · November 2026</div>
+    <h1>AIの記憶を、<br><em>モデルの外</em>に置く。</h1>
+    <p class="lead">
+      Living Brain は、会話・文書・議事録から作った知識をモデルの外に蓄積し、
+      ChatGPT、Claude、Cursor など複数のAIから同じ記憶を読み書きできるようにするサービスです。
+      このノートは、公開仕様と一次データだけを使って、その中身を再構成したものです。
+    </p>
+
+    <div class="facts">
+      <div class="fact"><div class="k">API</div><div class="v">50</div><div class="s">パス / 60オペレーション</div></div>
+      <div class="fact"><div class="k">MCP</div><div class="v">60</div><div class="s">ツール（APIキー型）</div></div>
+      <div class="fact"><div class="k">LoCoMo</div><div class="v">92.2<span style="font-size:.6em">%</span></div><div class="s">1,540問での公称値</div></div>
+      <div class="fact"><div class="k">分母の再計算</div><div class="v">1,986<span style="font-size:.5em">−446</span></div><div class="s">公開データで一致</div></div>
     </div>
   </div>
 </header>
 
-<section id="problem">
+<!-- 01 -->
+<section id="what">
   <div class="wrap">
-    <h2>もんだい：きおくが バラバラ</h2>
-    <p class="sub">いまの AI は、それぞれの 会社の 中に きおくを もっています。</p>
-
-    <div class="split">
-      <div class="panel bad">
-        <h3><span class="pill">これまで</span></h3>
-        <div class="stack">
-          <div class="row"><div class="box">ChatGPT<small>きおく A</small></div></div>
-          <div class="row"><div class="box">Claude<small>きおく B</small></div></div>
-          <div class="row"><div class="box">Cursor<small>きおく C</small></div></div>
-        </div>
-        <p class="note">べつの アプリに かえると、きおくは ゼロ。</p>
-      </div>
-      <div class="panel">
-        <h3><span class="pill" style="background:var(--teal-soft);color:#08615d">Living Brain</span></h3>
-        <div class="stack">
-          <div class="row"><div class="box">ChatGPT</div></div>
-          <div class="row"><div class="box">Claude</div></div>
-          <div class="row"><div class="box">Cursor</div></div>
-        </div>
-        <div class="arrowdown" aria-hidden="true">↓</div>
-        <div class="row"><div class="box" style="border-color:var(--teal);background:var(--teal-soft)">Living Brain<small>きおくは 1か所</small></div></div>
+    <div class="sec-head">
+      <div class="sec-no">01</div>
+      <div>
+        <h2>解決しようとしている問題</h2>
+        <p class="sec-sub">記憶が、モデルとツールの中に閉じている。これがすべての出発点です。</p>
       </div>
     </div>
 
-    <div class="analogy"><b>たとえると…</b> 3つの ノートに べつべつに 書いていた メモを、1つの ノートに まとめる かんじ。</div>
+    <div class="silos">
+      <div class="silo-col">
+        <h3><span class="tag bad">これまで</span> 記憶がサイロ化する</h3>
+        <div class="tool"><span class="dot" aria-hidden="true"></span><b>ChatGPT</b><span>記憶A</span></div>
+        <div class="tool"><span class="dot" aria-hidden="true"></span><b>Claude</b><span>記憶B</span></div>
+        <div class="tool"><span class="dot" aria-hidden="true"></span><b>Cursor</b><span>記憶C</span></div>
+        <p class="muted" style="margin-top:14px">ツールを乗り換えるたびに、同じ説明をやり直す。文脈は共有されない。</p>
+      </div>
 
-    <figure class="shot">
-      <img src="screenshots/01-home-hero.webp" alt="Living Brain のトップページ。黒い背景に「One Living Brain. Every AI.」と表示されている。" loading="lazy" width="1440" height="900">
-      <figcaption>ほんものの トップページ（2026年11月7日）</figcaption>
+      <div class="silo-col">
+        <h3><span class="tag good">Living Brain</span> 記憶を1か所に</h3>
+        <div class="tool"><span class="dot" aria-hidden="true"></span><b>ChatGPT</b></div>
+        <div class="tool"><span class="dot" aria-hidden="true"></span><b>Claude</b></div>
+        <div class="tool"><span class="dot" aria-hidden="true"></span><b>Cursor</b></div>
+        <div class="connector" aria-hidden="true"></div>
+        <div class="hub"><b>Living Brain</b><span>1つの記憶を全ツールで共有</span></div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="i" aria-hidden="true">◆</div>
+      <div>
+        <b>記憶は「乗り換えコスト」そのもの</b>
+        <p>モデルを替えると失われる資産だからこそ、モデル中立の記憶層は保険として機能します。Living Brain の主張の核はここにあります。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">02</div>
+      <div>
+        <h2>仕組み：5段のパイプライン</h2>
+        <p class="sec-sub">情報は「保存」されるのではなく、「ページとして編集」されます。</p>
+      </div>
+    </div>
+
+    <div class="pipe">
+      <div class="step"><div class="n">01</div><b>Capture</b><span>メモ・URL・ファイル・文字起こしを受け取る</span></div>
+      <div class="step"><div class="n">02</div><b>Extract</b><span>事実だけを抜き出す</span></div>
+      <div class="step"><div class="n">03</div><b>Route</b><span>どのページに置くか決める</span></div>
+      <div class="step"><div class="n">04</div><b>Patch</b><span>ページ全文を書き直して統合</span></div>
+      <div class="step"><div class="n">05</div><b>Link</b><span>関連ページと接続し、検索用の索引を更新</span></div>
+    </div>
+
+    <div class="pipe-note">
+      <span class="sync">同期</span> 受け付けは即座に返る
+      <span style="color:var(--line-2)">|</span>
+      <span class="async">非同期</span> ページができるまで数分かかる
+    </div>
+
+    <div class="grid-2" style="margin-top:24px">
+      <div class="panel">
+        <h3>なぜ「全文書き換え」なのか</h3>
+        <p style="font-size:14.5px;color:var(--ink-2);margin:0">
+          断片を足していく方式だと、同じ話題が複数箇所に散らばり、矛盾も直りません。
+          Living Brain は事実が届くたびに1枚のページを書き直すため、答えを読むときの文脈が1か所に揃います。
+        </p>
+      </div>
+      <div class="panel">
+        <h3>矛盾は消さずに残す</h3>
+        <p style="font-size:14.5px;color:var(--ink-2);margin:0">
+          新しい情報が既存ページと食い違うと、上書きせず <code>contested</code>（係争中）にします。
+          両方の主張を保持し、人が <code>resolve</code> するまで「議論中」として扱います。
+        </p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="i" aria-hidden="true">▲</div>
+      <div>
+        <b>コストの性質</b>
+        <p>書き込みがページ全体に比例するため、記憶が育つほど1回あたりのトークン消費は増えます（原価は非公開。これは仕様からの推測です）。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="model">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">03</div>
+      <div>
+        <h2>データの形</h2>
+        <p class="sec-sub">API仕様（OpenAPI 3.1）から復元したモデル。111個のスキーマで定義されています。</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="tree">
+<b>Brain</b> <span class="c">— 記憶の入れ物（subject単位で隔離）</span>
+ ├─ <b>Page</b> <span class="c">— 知識の単位</span>
+ │   ├ title / summary / body（Markdown）
+ │   ├ pageType / status / bucket
+ │   ├ version <span class="c">— 書き換えるたびに増える</span>
+ │   ├ sources[] <span class="c">→ IngestSource</span>
+ │   └ backlinks[]
+ └─ <b>Connection</b> <span class="c">— ページ間リンク</span>
+     ├ strength: strong / medium / weak
+     └ reasoning <span class="c">— なぜ繋がるか（モデル生成）</span>
+        </div>
+        <div class="enum">
+          <code>source</code><code>topic</code><code>entity</code><code>project</code><code>decision</code><code>brief</code>
+        </div>
+        <p class="muted" style="margin-top:8px">pageType の6種</p>
+      </div>
+
+      <div class="panel">
+        <h3>ライフサイクル</h3>
+        <table>
+          <tr><th>status</th><th>意味</th></tr>
+          <tr><td><code>active</code></td><td>現行</td></tr>
+          <tr><td><code>stale</code></td><td>最近参照されていない</td></tr>
+          <tr><td><code>contested</code></td><td>矛盾を抱えている</td></tr>
+          <tr><td><code>deprecated</code></td><td>置き換え済み</td></tr>
+          <tr><td><code>archived</code></td><td>利用者が退避</td></tr>
+        </table>
+        <p class="muted" style="margin-top:12px">どの段で失敗しても、ページ保存と埋め込みは独立して扱われます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="diff">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">04</div>
+      <div>
+        <h2>普通のRAGと何が違うのか</h2>
+        <p class="sec-sub">「断片を渡す」か「編集済みのページを渡す」か。設計の分かれ目はここです。</p>
+      </div>
+    </div>
+
+    <div class="cmp">
+      <div class="panel">
+        <h3>チャンク型RAG</h3>
+        <p>文書を細かく切り、質問に近い断片を数個集めてモデルに渡す。モデルは毎回つなぎ合わせる。</p>
+        <div class="flowline">
+          <span class="node">分割</span><span class="arrow">→</span>
+          <span class="node">ベクトル保存</span><span class="arrow">→</span>
+          <span class="node">上位k件</span><span class="arrow">→</span>
+          <span class="node">生成</span>
+        </div>
+        <p class="muted">弱点：同じ話題が重複する / 古い記述と新しい記述が同居する</p>
+      </div>
+
+      <div class="panel win">
+        <h3>ページ合成型（Living Brain）</h3>
+        <p>事実が届くたびにページを書き直して統合する。質問時は完成したページを数枚読むだけ。</p>
+        <div class="flowline">
+          <span class="node t">事実抽出</span><span class="arrow">→</span>
+          <span class="node v">ページ統合</span><span class="arrow">→</span>
+          <span class="node t">ページを読む</span>
+        </div>
+        <p class="muted">強み：文脈が1枚に揃う / 読み出しトークンが少ない</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="i" aria-hidden="true">◆</div>
+      <div>
+        <b>トレードオフ</b>
+        <p>読み出しは軽くなりますが、書き込みは重くなります。誤ったマージが起きると、1枚のページが丸ごと間違うリスクもあります。同社が「1位と2位の差が小さいときは保留する」設計にしているのは、この失敗への対策です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="bench">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">05</div>
+      <div>
+        <h2>「92.2%」の分母を数え直す</h2>
+        <p class="sec-sub">公開データセットを取得し、問題の内訳を自分で集計しました。</p>
+      </div>
+    </div>
+
+    <p>LoCoMo の公式データには <b>1,986問</b> が入っています。Living Brain が公表しているのは <b>1,540問</b>。差の <b>446問</b> は「答えられない質問（adversarial）」で、評価対象から外されています。</p>
+
+    <div class="bars">
+      <div class="bar-row"><span class="lbl">データセット全体</span><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><span class="bar-val">1,986</span></div>
+      <div class="bar-row"><span class="lbl">除外（adversarial）</span><div class="bar-track"><div class="bar-fill removed" style="width:22.5%"></div></div><span class="bar-val">446</span></div>
+      <div class="bar-row"><span class="lbl">評価に使用</span><div class="bar-track"><div class="bar-fill rest" style="width:77.5%"></div></div><span class="bar-val">1,540</span></div>
+    </div>
+
+    <div class="equation"><span>1,986</span><span class="op">−</span><span>446</span><span class="op">=</span><span class="res">1,540</span></div>
+
+    <div class="grid-2" style="margin-top:22px">
+      <div class="panel">
+        <h3>カテゴリ別の内訳も一致</h3>
+        <table>
+          <tr><th>種類</th><th style="text-align:right">問題数</th><th style="text-align:right">正答率</th></tr>
+          <tr><td>Temporal</td><td class="num">321</td><td class="num">94.7%</td></tr>
+          <tr><td>Multi-hop</td><td class="num">282</td><td class="num">94.0%</td></tr>
+          <tr><td>Single-hop</td><td class="num">841</td><td class="num">92.7%</td></tr>
+          <tr><td>Open-domain</td><td class="num">96</td><td class="num">74.0%</td></tr>
+        </table>
+      </div>
+      <div class="panel">
+        <h3>公称値は再計算できる</h3>
+        <p style="font-size:14.5px;color:var(--ink-2)">
+          カテゴリ別の正答率を問題数で重み付けすると <b>92.19%</b>。公表値 92.2% と一致します。内部の整合性は取れています。
+        </p>
+        <p class="muted">ただし回答モデルは GPT-5。他社の公表値（例：Mem0 の 66.9%）とは、回答モデルも判定方法も違うため単純比較はできません。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="contradiction">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">06</div>
+      <div>
+        <h2>同じテストなのに、数字が2つある</h2>
+        <p class="sec-sub">トップページと公式ドキュメントで、レイテンシの記載が食い違っています。</p>
+      </div>
+    </div>
+
+    <div class="vs">
+      <div class="metric">
+        <div class="src">トップページ</div>
+        <div class="val">464<span class="unit">ms</span></div>
+        <div class="cap">Median memory recall</div>
+      </div>
+      <div class="neq" aria-hidden="true">≠</div>
+      <div class="metric">
+        <div class="src">公式ドキュメント</div>
+        <div class="val">592<span class="unit">ms</span></div>
+        <div class="cap">Median retrieval</div>
+      </div>
+    </div>
+
+    <p style="margin-top:18px">回答時間も <b>3.7秒</b> と <b>11.2秒</b>。どちらも同じバッチ（<code>f8d531ac</code>, 2026-11-01）を指しています。測定条件の再定義か、更新漏れかのどちらかです。</p>
+
+    <details>
+      <summary>公式ドキュメントの画面を確認する</summary>
+      <figure>
+        <img src="screenshots/05-docs-benchmarks-table.webp" alt="Living Brain の公式ベンチマークページ。92.2%、1,420/1,540、592ms、11.2s と表示されている。" loading="lazy" width="2880" height="1800">
+        <figcaption><b>証拠</b> docs.livingbrain.com/docs/benchmarks（2026-11-07 取得）</figcaption>
+      </figure>
+    </details>
+  </div>
+</section>
+
+<!-- 07 -->
+<section id="care">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">07</div>
+      <div>
+        <h2>導入前に確認すべき3点</h2>
+        <p class="sec-sub">技術ではなく、契約と設計の話です。</p>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="num">01</div>
+        <h3>削除の連鎖が切れている</h3>
+        <p>出典を削除しても、そこから生成されたページは残ります。公式ドキュメントに明記されています。消去が必要な用途では、ページも個別に削除する運用が要ります。</p>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <h3>AI訓練はオプトアウト式</h3>
+        <p>プライバシーポリシー上、既定ではサービス利用データがAI改善に使われ得ます。使わせたくない場合は明示的にオプトアウトが必要です。</p>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <h3>数値は単一の実行結果</h3>
+        <p>92.2% は1回の実行の結果で、複数回の平均ではありません。公式ページにも「Each figure on this page comes from a single run」と書かれています。</p>
+      </div>
+    </div>
+
+    <details>
+      <summary>料金体系を確認する</summary>
+      <figure>
+        <img src="screenshots/03-pricing-full.webp" alt="Living Brain の料金ページ。APIは入力100万トークンあたり8ドル、Workspaceは月99ドル。" loading="lazy" width="2880" height="12648">
+        <figcaption><b>証拠</b> livingbrain.com/pricing（2026-11-07 取得）</figcaption>
+      </figure>
+    </details>
+  </div>
+</section>
+
+<!-- 08 -->
+<section id="surface">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-no">08</div>
+      <div>
+        <h2>公開されている接点</h2>
+        <p class="sec-sub">同じ記憶に、4つの入口から届きます。</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <h3>API / SDK / CLI</h3>
+        <p style="font-size:14.5px;color:var(--ink-2)">
+          OpenAPI 3.1 で50パス・60オペレーション。TypeScript / Python SDK と Rust 製 CLI は、いずれも Fern で自動生成されています。
+        </p>
+        <div class="enum">
+          <code>REST</code><code>@living-brain/sdk</code><code>livingbrain (CLI)</code><code>webhooks</code><code>Slack</code><code>Telegram</code>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>MCP は2系統ある</h3>
+        <p style="font-size:14.5px;color:var(--ink-2)">
+          APIキーで使う生成型サーバー（60ツール）と、OAuthでサインインする型（12ツール＋リソース）が別々に存在します。
+        </p>
+        <div class="enum">
+          <code>fernmcp.dev/livingbrain</code><code>api.livingbrain.com/mcp</code>
+        </div>
+      </div>
+    </div>
+
+    <figure>
+      <img src="screenshots/02-home-full.webp" alt="Living Brain のトップページ全体。ヒーロー、ベンチマーク、機能説明、FAQ、フッターが並ぶ。" loading="lazy" width="1440" height="14038">
+      <figcaption><b>証拠</b> livingbrain.com 全体（2026-11-07 取得）</figcaption>
     </figure>
   </div>
 </section>
 
-<section id="how">
+<!-- 09 -->
+<section id="method">
   <div class="wrap">
-    <h2>しくみ：5つの ステップ</h2>
-    <p class="sub">あたらしい 情報が とどくと、こう ならびます。</p>
-
-    <div class="pipeline">
-      <div class="step"><span class="n">1</span><b>つかまえる</b><span>メモ・URL・音声を うけとる</span></div>
-      <div class="step"><span class="n">2</span><b>ぬきだす</b><span>たいせつな 事実だけ とる</span></div>
-      <div class="step"><span class="n">3</span><b>おきばを きめる</b><span>どの ページに 入れるか</span></div>
-      <div class="step"><span class="n">4</span><b>かきかえる</b><span>ページを まるごと 書き直す</span></div>
-      <div class="step"><span class="n">5</span><b>むすぶ</b><span>かんけいある ページを つなぐ</span></div>
+    <div class="sec-head">
+      <div class="sec-no">09</div>
+      <div>
+        <h2>調査の方法と限界</h2>
+        <p class="sec-sub">結論はすべて、再実行できる形で残しています。</p>
+      </div>
     </div>
 
-    <div class="analogy"><b>たとえると…</b> 図書館の 司書さん。本が とどく → 中身を 読む → どの たなに おくか きめる → カードを 書き直す → かんけいある 本に しおりを はさむ。</div>
-
-    <div class="note">書きこみは すぐ おわるけど、ページが できるのは すこし あと（数分）。だから「書いた すぐ さがす」は できません。</div>
-  </div>
-</section>
-
-<section id="diff">
-  <div class="wrap">
-    <h2>ふつうの RAG と なにが ちがう？</h2>
-    <p class="sub">ここが この サービスの いちばん おもしろい ところ。</p>
-
-    <div class="compare">
+    <div class="grid-3">
       <div class="panel">
-        <h3>ふつうの RAG</h3>
-        <p style="font-size:14px;color:var(--ink-soft);margin:0">本を 1cm ずつ 切って、きれた 紙を 5まい えらんで、くっつける。</p>
-        <div class="mini-flow"><span class="chip">切る</span>→<span class="chip">しまう</span>→<span class="chip">5まい えらぶ</span>→<span class="chip">くっつける</span></div>
-        <p class="note">こまったこと：同じ 話が あちこちに／むじゅんが のこる</p>
+        <h3>静的な証拠</h3>
+        <p class="muted">OpenAPI仕様、公式ドキュメント24ページ、MCPのツール一覧、公開SDK/CLIのソース、npmメタデータ、GitHubの履歴。</p>
       </div>
-      <div class="panel win">
-        <h3>Living Brain</h3>
-        <p style="font-size:14px;color:var(--ink-soft);margin:0">あたらしい 話が きたら、1さつの ページを 書き直して まとめる。</p>
-        <div class="mini-flow"><span class="chip v">1さつに まとめる</span>→<span class="chip v">その 1さつを 読む</span></div>
-        <p class="note">いいこと：話が 1か所に そろう／トークンが 少なく すむ</p>
+      <div class="panel">
+        <h3>実行時の観測</h3>
+        <p class="muted">REA による受動的なブラウザ観測。DOM・アクセシビリティツリー・リソース・ストレージの鍵を記録。JavaScriptの評価やページ操作は行っていません。</p>
       </div>
-    </div>
-
-    <div class="analogy"><b>たとえると…</b> 「切りはしを わたす」か「まとめた ノートを わたす」か。ノートの ほうが、読む 人は ラク。</div>
-  </div>
-</section>
-
-<section id="numbers">
-  <div class="wrap">
-    <h2>数字の カラクリ</h2>
-    <p class="sub">「92.2%」の 分母を、わたしたちは 自分で 数えました。</p>
-
-    <p style="margin:0 0 6px"><b>① まず、ぜんぶの 問題</b></p>
-    <div class="bars">
-      <div class="bar-row"><span>LoCoMo ぜんぶ</span><div class="bar grey" style="width:100%"></div><span class="bar-val">1,986</span></div>
-    </div>
-
-    <p style="margin:24px 0 6px"><b>② 「こたえられない」問題を のぞく</b></p>
-    <div class="bars">
-      <div class="bar-row"><span>のぞいた分</span><div class="bar orange" style="width:22.5%"></div><span class="bar-val">446</span></div>
-    </div>
-
-    <p style="margin:24px 0 6px"><b>③ のこりで 点数を つける</b></p>
-    <div class="bars">
-      <div class="bar-row"><span>のこり</span><div class="bar" style="width:77.5%"></div><span class="bar-val">1,540</span></div>
-    </div>
-
-    <div class="eq"><span>1,986</span><span class="op">−</span><span>446</span><span class="op">=</span><span style="color:var(--violet)">1,540</span></div>
-    <p class="note" style="text-align:center">この 1,540問 で 92.2%。計算も ぴったり 合いました（92.19%）。</p>
-
-    <div class="analogy"><b>だいじな こと</b> 数字が ウソなのでは ありません。ただ「どの 問題で 測ったか」を 知らないと、ほかの サービスと くらべられません。</div>
-  </div>
-</section>
-
-<section id="careful">
-  <div class="wrap">
-    <h2>でも、2つ 数字が ある</h2>
-    <p class="sub">同じ ベンチマークなのに、サイトと 説明書で ちがう 数字が 書いてあります。</p>
-
-    <div class="versus">
-      <div class="num-card">
-        <div class="lbl">トップページ</div>
-        <div class="big">464<span style="font-size:18px">ms</span></div>
-        <div class="src">「Median memory recall」</div>
-      </div>
-      <div class="vs" aria-hidden="true">≠</div>
-      <div class="num-card">
-        <div class="lbl">せいしきな 説明書</div>
-        <div class="big">592<span style="font-size:18px">ms</span></div>
-        <div class="src">「Median retrieval」</div>
+      <div class="panel">
+        <h3>一次データの再計算</h3>
+        <p class="muted">LoCoMo の公開データを取得し、問題数・カテゴリ・正答率の重み付き平均を Python で再計算。</p>
       </div>
     </div>
 
-    <p class="note" style="text-align:center">おなじ 日（2026-11-01）の テストなのに、464ms と 592ms。答えの 時間も 3.7秒 と 11.2秒。</p>
-
-    <details>
-      <summary>しゃしんで 見る（説明書の ページ）</summary>
-      <figure class="shot">
-        <img src="screenshots/05-docs-benchmarks-table.webp" alt="Living Brain の公式ベンチマークページ。92.2%、1,420/1,540、592ms、11.2s と表示されている。" loading="lazy" width="1440" height="900">
-        <figcaption>公式ドキュメントでは 592ms / 11.2s</figcaption>
-      </figure>
-    </details>
-
-    <div class="analogy"><b>たとえると…</b> おなじ テストの 点数が、教室の ポスターと 成績表で ちがう。どちらかが まちがい。</div>
-  </div>
-</section>
-
-<section id="care">
-  <div class="wrap">
-    <h2>つかう前に 知っておく 3つ</h2>
-    <p class="sub">ここは 技術では なくて、約束の 話。</p>
-
-    <div class="cards">
-      <div class="card">
-        <div class="big" aria-hidden="true">🗑️</div>
-        <h3>けしても、のこる</h3>
-        <p>元の メモを けしても、そこから 作った ページは のこります。けすなら ページも べつに けす ひつようが あります。</p>
-      </div>
-      <div class="card">
-        <div class="big" aria-hidden="true">📚</div>
-        <h3>べんきょうに つかわれる</h3>
-        <p>「AIの べんきょうに つかわないで」と 自分で 言わないと、つかわれる 可能性が あります（オプトアウト）。</p>
-      </div>
-      <div class="card">
-        <div class="big" aria-hidden="true">🔢</div>
-        <h3>数字は 1回の 結果</h3>
-        <p>92.2% は 1回の テストの 結果です。なんども やって 平均した 数字では ありません。</p>
+    <div class="callout">
+      <div class="i" aria-hidden="true">!</div>
+      <div>
+        <b>この調査で確認できていないこと</b>
+        <p>APIキーを用いた動的検証（削除の連鎖、冪等性、export→再取り込み、実コスト）は未実施です。ベンチマークの独立再現も行っていません。レポートでは該当箇所を「不明」として残しています。</p>
       </div>
     </div>
 
-    <details>
-      <summary>りょうきんの しゃしんを 見る</summary>
-      <figure class="shot">
-        <img src="screenshots/03-pricing-full.webp" alt="Living Brain の料金ページ。API は入力100万トークンあたり8ドル、Workspace は月99ドル。" loading="lazy" width="1440" height="900">
-        <figcaption>つかった分だけ はらう 方式（入力 $8 / 100万トークン）</figcaption>
-      </figure>
-    </details>
-  </div>
-</section>
+    <div class="links">
+      <a class="btn" href="REPORT.md">詳細レポート</a>
+      <a class="btn ghost" href="PLAN.md">再設計プラン</a>
+      <a class="btn ghost" href="evidence/SOURCES.md">出典一覧</a>
+      <a class="btn ghost" href="https://github.com/ELRdn/living-brain-reverse-engineering">GitHub</a>
+    </div>
 
-<section id="how-we-looked">
-  <div class="wrap">
-    <h2>どうやって しらべたか</h2>
-    <p class="sub">3つだけ。</p>
-    <div class="method">
-      <div><b>① そっと のぞく</b><span>ブラウザの 中を 読みとる。ボタンは おさない。</span></div>
-      <div><b>② 説明書を 読む</b><span>APIの 設計図と、公開されて いる 文書を ぜんぶ。</span></div>
-      <div><b>③ 数字を 数えなおす</b><span>公開データを とってきて、分母から 自分で 計算。</span></div>
-    </div>
-    <div class="btnrow">
-      <a class="btn" href="REPORT.md">くわしい レポート</a>
-      <a class="btn alt" href="PLAN.md">これからの 計画</a>
-      <a class="btn alt" href="evidence/SOURCES.md">出典の 一覧</a>
-    </div>
+    <p class="muted">
+      Living Brain は ChatAndBuild の製品です。本ページは批評・分析を目的として作成しました。
+      数値はすべて公開情報から再計算したもので、ベンダーによる確認は受けていません。
+    </p>
   </div>
 </section>
 
@@ -362,8 +626,7 @@
 
 <footer>
   <div class="wrap">
-    <p>しらべた 日：2026年11月6〜7日　／　しゃしん 5まい　／　出典は すべて <a href="evidence/SOURCES.md">SOURCES.md</a> に。</p>
-    <p>Living Brain は ChatAndBuild の 製品です。この ページは 批評と 分析の ために つくりました。数字は すべて 公開されて いる 情報から 再計算したものです。</p>
+    <p>Living Brain リサーチノート ／ 調査日 2026年11月6–7日 ／ 証拠画像5点（WebP）</p>
   </div>
 </footer>
 
