@@ -1,5 +1,7 @@
 # Living Brain — Reverse Engineering & Verification
 
+> **やさしい図解版 → https://elrdn.github.io/living-brain-reverse-engineering/**
+
 An evidence-led teardown of [Living Brain](https://livingbrain.com/) — a "memory outside the model" layer for AI agents — plus a replication plan for its benchmark claims.
 
 > Status: **Phase 1 (static evidence) complete.** Dynamic verification is pending an API key. See [`PLAN.md`](PLAN.md) §8.
