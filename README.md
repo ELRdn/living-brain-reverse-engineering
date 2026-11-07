@@ -4,6 +4,9 @@
 
 An evidence-led teardown of [Living Brain](https://livingbrain.com/) — a "memory outside the model" layer for AI agents — plus a replication plan for its benchmark claims.
 
+- **Technical report**: [`REPORT.md`](REPORT.md) — architecture, API surface, benchmark denominator check
+- **UI/UX report**: [`REPORT-UIUX.md`](REPORT-UIUX.md) — four visual languages, header defect, accessibility audit, onboarding
+
 > Status: **Phase 1 (static evidence) complete.** Dynamic verification is pending an API key. See [`PLAN.md`](PLAN.md) §8.
 
 ## What this repo answers

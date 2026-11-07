@@ -1,0 +1,28 @@
+{
+ "lang": "en",
+ "h1": 2,
+ "skips": [
+  "1->4"
+ ],
+ "images": {
+  "total": 10,
+  "missingAlt": 0
+ },
+ "contrast": {
+  "sampled": 300,
+  "failures": 1,
+  "worst": [
+   {
+    "r": 3.29,
+    "size": 16,
+    "text": "living_brain_show_graph"
+   }
+  ]
+ },
+ "tap": {
+  "total": 121,
+  "under24": 16
+ },
+ "overflow": false,
+ "scrollWidth": 1440
+}

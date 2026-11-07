@@ -1,0 +1,26 @@
+{
+ "lang": "en",
+ "h1": 1,
+ "skips": [],
+ "images": {
+  "total": 1,
+  "missingAlt": 0
+ },
+ "contrast": {
+  "sampled": 73,
+  "failures": 1,
+  "worst": [
+   {
+    "r": 2.7,
+    "size": 14,
+    "text": "Sign in"
+   }
+  ]
+ },
+ "tap": {
+  "total": 62,
+  "under24": 16
+ },
+ "overflow": false,
+ "scrollWidth": 1440
+}

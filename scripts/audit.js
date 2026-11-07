@@ -19,8 +19,12 @@
   const bgOf = (el) => {
     let n = el;
     while (n && n !== de) {
-      const c = parse(getComputedStyle(n).backgroundColor);
-      if (c && c.a > 0.5) return c;
+      const raw = getComputedStyle(n).backgroundColor;
+      if (raw && raw !== "rgba(0, 0, 0, 0)" && raw !== "transparent") {
+        const c = parse(raw);
+        // Unparseable colour space (e.g. lab()) — stop and report unknown.
+        return c && c.a > 0.5 ? c : null;
+      }
       n = n.parentElement;
     }
     return { r: 255, g: 255, b: 255 };
@@ -33,7 +37,7 @@
   const skips = [];
   for (let i = 1; i < hs.length; i++) if (hs[i].l - hs[i - 1].l > 1) skips.push(`${hs[i - 1].l}->${hs[i].l}`);
 
-  const imgs = [...doc.querySelectorAll("img")];
+  const imgs = [...doc.querySelectorAll("img")].filter((i) => i.getBoundingClientRect().width > 0);
   const ctrls = [...doc.querySelectorAll("a,button,summary,input")];
   const samples = [...doc.querySelectorAll("p,li,span,a,b,small,figcaption,summary,h1,h2,h3")]
     .filter((el) => el.children.length === 0 && (el.textContent || "").trim().length > 2)
@@ -47,7 +51,9 @@
       if (!fg) return null;
       const size = parseFloat(st.fontSize);
       const weight = Number(st.fontWeight) || 400;
-      const r = ratio(fg, bgOf(el));
+      const bg = bgOf(el);
+      if (!bg) return null;
+      const r = ratio(fg, bg);
       const need = size >= 24 || (size >= 18.66 && weight >= 700) ? 3 : 4.5;
       return r < need ? { r: Math.round(r * 100) / 100, size, text: el.textContent.trim().slice(0, 30) } : null;
     })

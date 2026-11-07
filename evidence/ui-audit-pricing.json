@@ -1,0 +1,22 @@
+{
+ "lang": "en",
+ "h1": 1,
+ "skips": [
+  "1->3"
+ ],
+ "images": {
+  "total": 0,
+  "missingAlt": 0
+ },
+ "contrast": {
+  "sampled": 157,
+  "failures": 0,
+  "worst": []
+ },
+ "tap": {
+  "total": 23,
+  "under24": 7
+ },
+ "overflow": false,
+ "scrollWidth": 1440
+}
