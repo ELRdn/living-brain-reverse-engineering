@@ -6,7 +6,7 @@
 
 > **証拠の区分**
 > - **Tier A（自力観測）**: 本リポジトリの `screenshots/ui-*.webp`。CDP で撮影し、DOM・計算スタイルを実測。
-> - **Tier B（ユーザー提供）**: ログイン後のアプリ画面。依頼者が撮影したスクリーンショットを参照（§8）。ファイルは未収録。
+> - **Tier B（ユーザー提供）**: ログイン後のアプリ画面。依頼者が撮影したスクリーンショット（`screenshots/app/`）。**個人情報（メールアドレス・subject ID・ワークスペース名）はマスク済み**。
 > - 数値は `evidence/ui-audit-*.json` に生データあり。**観測 / 推測 / 不明**を明記する。
 
 ---
@@ -46,6 +46,8 @@ Living Brain の UI は、**「マーケティング」「料金」「ドキュ�
 ```
 
 **観測**: 同じ「Sign in」でも2種類の画面が存在します。マーケティング側の `/signin` はフッター付きのブランドページ、`/workspace` はロゴとボタンだけのアプリ入口です（Tier B のスクリーンショットで両方確認）。導線によって見た目が変わるため、ユーザーは「別のサービスに来た」と感じる可能性があります（推測）。
+
+![マーケティング側のサインイン（/signin）](screenshots/app/app-09-signin.webp)
 
 ---
 
@@ -178,14 +180,14 @@ Living Brain の UI は、**「マーケティング」「料金」「ドキュ�
 
 ## 7. アプリ（ログイン後）— ユーザー提供スクリーンショットより
 
-> **Tier B**: 依頼者が撮影した画面（2026-11-07）。以下は画像から読み取った観測で、DOM計測はしていません。
+> **Tier B**: 依頼者が撮影した画面（2026-11-07）。個人情報はマスク済み。DOM計測はしていないため、コントラスト等の数値は含みません。
 
 ### 7.1 シェル
 
 ```
 ┌───────────────┬──────────────────────────────────────────────┐
 │ Living Brain  ▸│  ページタイトル                              │
-│ えるすプライベート用 ▾                                        │
+│ (ワークスペース名) ▾                                          │
 │               │  1行の説明                                    │
 │ WORKSPACE     │  ┌────────────────────────────────────────┐  │
 │  Home         │  │ 白いカード（枠線＋薄い影）              │  │
@@ -201,6 +203,8 @@ Living Brain の UI は、**「マーケティング」「料金」「ドキュ�
 └───────────────┴──────────────────────────────────────────────┘
 ```
 
+![アプリのホーム](screenshots/app/app-06-home.webp)
+
 **観測**: サイドバーは「WORKSPACE」と「DEVELOPER」の2グループに分かれ、役割が明確です。下部に残高カード（`Pay as you go` / `1 of 1 brains - Upgra…` / 円形プログレス）、最下部にユーザーと設定。定番の構造で、迷いにくい。
 
 **観測**: ページ見出し（例: `Webhooks`）＋1行説明＋白カードの繰り返しで、全ページが同じリズムです。情報密度は高いですが、余白が十分にあり読みやすい。
@@ -215,6 +219,16 @@ Living Brain の UI は、**「マーケティング」「料金」「ドキュ�
 | Projects | プロジェクト選択、新規作成、ChatChat 同期、Danger zone | Danger zone は赤枠で分離。破壊的操作の置き場所として適切 |
 | Brain | ヒーロー（`Play with your Living Brain`）、統計（Brains / Memories / Connections）、ブレインカード、Quickstart | 3Dの脳がブランドの視覚記号として機能 |
 
+![Brain](screenshots/app/app-05-brain.webp)
+
+![Projects](screenshots/app/app-04-projects.webp)
+
+![Webhooks](screenshots/app/app-01-webhooks.webp)
+
+![API keys](screenshots/app/app-02-api-keys.webp)
+
+![Billing & Team](screenshots/app/app-03-billing.webp)
+
 **観測（重複）**: `Home` と `Brain` の両方にブレインカードの一覧が出ます。Home は「ヒーロー＋一覧＋Quickstart」、Brain は「統計＋一覧」。初見では「どちらが本来の入口か」が分かりません。
 
 **観測（単位の不統一）**: 利用量の行で `Projects 1 / 1`、`Seats 1 / 1`、`API keys 0 / 3` と上限が数字なのに対し、`Brains 1 / no fixed cap` だけ文字列です。同じ表の中で表現が混ざっています。
@@ -224,6 +238,10 @@ Living Brain の UI は、**「マーケティング」「料金」「ドキュ�
 ### 7.3 オンボーディング「Meet Your Living Brain」
 
 **観測**: 左右分割。左は創業者からの手紙（`WELCOME TO LIVING BRAIN` / `Meet Your Living Brain` / 3段落 / 署名 `Christel B.` / Founder）。右は `Benefits`（92.2%、22.6X、95%、0、**+7.8pts**、**4.9X**）、`How it works`（3項目のアコーディオン）、`Limitations`（3項目）、`Ready to test our claims?` → `Create My Living Brain`。
+
+![オンボーディング（上部）](screenshots/app/app-07-onboarding.webp)
+
+![オンボーディング（Limitations まで）](screenshots/app/app-08-onboarding-limits.webp)
 
 これは**この製品で最も優れたUI**です。理由は3つ。
 
@@ -363,4 +381,16 @@ Home は「次の行動」（Quickstart・最近のブレイン）、Brain は�
 | `ui-16-mobile-pricing.webp` | モバイル 料金 |
 | `ui-17-mobile-menu.webp` | モバイル メニュー |
 
-**Tier B（ユーザー提供、リポジトリ未収録）**: アプリの Home / Projects / Brain / Billing & Team / API keys / Webhooks、オンボーディング、`/signin`、モバイル表示。
+**Tier B（ユーザー提供、`screenshots/app/`、個人情報マスク済み）**
+
+| ファイル | 内容 |
+|---|---|
+| `app-06-home.webp` | Home（ヒーロー・ブレイン一覧・Quickstart） |
+| `app-05-brain.webp` | Brain（統計・ブレインカード） |
+| `app-04-projects.webp` | Projects（作成・ChatChat 同期・Danger zone） |
+| `app-01-webhooks.webp` | Webhooks（登録フォーム・空状態） |
+| `app-02-api-keys.webp` | API keys（認証ヘッダー・作成フォーム） |
+| `app-03-billing.webp` | Billing & Team（プラン・残高・利用量） |
+| `app-07-onboarding.webp` | オンボーディング（Benefits・How it works） |
+| `app-08-onboarding-limits.webp` | オンボーディング（Limitations・CTA） |
+| `app-09-signin.webp` | マーケティング側の `/signin` |
